@@ -9,6 +9,7 @@ use App\Controller\UserCreateAction;
 use App\Controller\UserDeleteAction;
 use App\Entity\Interfaces\CreatedAtSettableInterface;
 use App\Entity\Interfaces\UpdatedAtSettableInterface;
+use App\Entity\Traits\FillCreatedAtTrait;
 use App\Entity\Traits\FillUpdatedAtTrait;
 use App\Repository\UserRepository;
 use DateTimeInterface;
@@ -56,7 +57,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 class User implements UserInterface, UpdatedAtSettableInterface, CreatedAtSettableInterface, IsDeletedInterface
 {
-    use FillUpdatedAtTrait;
+    use FillCreatedAtTrait;
     use FillUpdatedAtTrait;
 
     /**
