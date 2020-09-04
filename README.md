@@ -44,8 +44,10 @@ Run migrations<br>
 
 Type ```exit``` for exiting php container or press ```CTRL + D```
 
-Done! You can open ```http://localhost:8507/api``` via browser. By the way, you can change this port by changing ```DOCKER_NGINX_PORT``` variable in [.env](.env) file. 
+**Done! You can open ```http://localhost:8507/api``` via browser. By the way, you can change this port by changing ```DOCKER_NGINX_PORT``` variable in [.env](.env) file.** 
 
+*if you got error after ```composer install``` or see error on your browser - don't mind. Some times mysql server needs more
+time to do first settings. Just refresh site after few minutes.*  
 
 ## Docker
 
