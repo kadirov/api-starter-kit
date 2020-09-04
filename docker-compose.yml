@@ -37,7 +37,7 @@ services:
     restart: unless-stopped
     environment:
       - MYSQL_ROOT_PASSWORD=${DATABASE_PASSWORD}
-      - MYSQL_DATABASE=${DATABASE_NAME}
+      - MYSQL_DATABASE=${DOCKER_PROJECT_NAME}
     volumes:
       # - ./sql:/sql
       - ./docker/mysql/db:/var/lib/mysql
