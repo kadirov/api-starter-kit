@@ -72,4 +72,6 @@ You can use [docker/php/cron-file](docker/php/cron-file) for cron jobs. But afte
 
 ```docker-compose up -d --build```
 
-
+## Swagger 
+You can change project name and description on swagger by editing file
+[config/packages/api_platform.yaml](config/packages/api_platform.yaml)
