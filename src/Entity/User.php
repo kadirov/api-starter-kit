@@ -92,7 +92,7 @@ class User implements UserInterface, UpdatedAtSettableInterface, CreatedAtSettab
     private $createdAt;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $updatedAt;
 
