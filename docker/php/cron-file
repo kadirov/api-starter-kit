@@ -1,0 +1,6 @@
+# After change this file you
+# must to re-build docker php container
+#
+# 5  4  3  *  1  At 04:05, on third day of month, on Monday
+# i  H  d  m  w  user command
+# *  *  *  *  *  root /usr/local/bin/php /var/www/html/bin/console some:symfony:command
