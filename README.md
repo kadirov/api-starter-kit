@@ -31,7 +31,11 @@ Enter to php container <br>
 Install requirements via composer <br>
 ```composer install```
 
-For use JWT you have to create private and public keys first.
+*if you got error like "An exception occurred in driver: SQLSTATE[HY000] [2002] Connection refused"  - don't mind. 
+Some times mysql server needs more time to do first settings. 
+Just run ```composer install``` again after few minutes.*  
+
+For use JWT you must to create private and public keys first.
 
 Get passphrase from .env files<br>
 ```jwt_passphrase=${JWT_PASSPHRASE:-$(grep ''^JWT_PASSPHRASE='' .env | cut -f 2 -d ''='')}```
@@ -47,11 +51,6 @@ Allow read action for www-data user<br>
 
 Run migrations<br>
 ```bin/console  doctrine:migrations:migrate```
-
-*if you got error like "An exception occurred in driver: SQLSTATE[HY000] [2002] Connection refused"  
-after ```composer install``` or runing migrations - don't mind. Some times mysql server needs more
-time to do first settings. Just run migrations again after few minutes.*  
-
 
 Type ```exit``` for exiting php container or press ```CTRL + D```
 
