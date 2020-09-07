@@ -16,8 +16,11 @@ Kit has 3 docker containers: **php, nginx** and **mysql**
 ![poster](poster.png)
 ## Installation
 
-Download project<br>
+Download the project<br>
 ```composer create-project kadirov/api-starter-kit --ignore-platform-reqs --no-scripts```
+
+Go to the project directory<br>
+```cd api-starter-kit```
 
 Run docker containers <br>
 ```docker-compose up -d```
