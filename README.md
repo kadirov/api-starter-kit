@@ -80,3 +80,11 @@ You can use [docker/php/cron-file](docker/php/cron-file) for cron jobs. But afte
 ## Swagger 
 You can change project name and description on swagger by editing file
 [config/packages/api_platform.yaml](config/packages/api_platform.yaml)
+
+## Git Hook
+
+If you don't use any deploying system you can do <br>
+```cp docker/other-files/git/hooks/post-merge .git/hooks``` 
+
+In this way git always executes command ```bin/console my:deploy```. You can change this command in the file [src/Command/MyDeployCommand.php](src/Command/MyDeployCommand.php).
+This command will clear caches, change owner of ./var and ./public/media folders to www-data, will run migrations. 
