@@ -5,8 +5,10 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Component\Core\Interfaces\IsDeletedInterface;
 use App\Controller\UserAboutMeAction;
+use App\Controller\UserChangePasswordAction;
 use App\Controller\UserCreateAction;
 use App\Controller\UserDeleteAction;
+use App\Controller\UserIsUniqueEmailAction;
 use App\Entity\Interfaces\CreatedAtSettableInterface;
 use App\Entity\Interfaces\UpdatedAtSettableInterface;
 use App\Entity\Traits\FillCreatedAtTrait;
@@ -17,6 +19,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
@@ -35,25 +38,42 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *          "get" = {
  *              "access_control" = "is_granted('ROLE_ADMIN')",
  *          },
+ *          "isUniqueEmail" = {
+ *              "controller" = UserIsUniqueEmailAction::class,
+ *              "method" = "post",
+ *              "path" = "users/is_unique_email",
+ *          },
  *          "post" = {
  *              "controller" = UserCreateAction::class,
  *          },
  *     },
  *     itemOperations = {
- *          "get" = { "access_control" = "object == user" },
- *          "put" = { "access_control" = "object == user" },
+ *          "changePassword" = {
+ *              "access_control" = "object == user",
+ *              "controller" = UserChangePasswordAction::class,
+ *              "denormalization_context" = { "groups" = {"users:changePassword:write"}},
+ *              "method" = "put",
+ *              "path" = "users/{id}/password",
+ *          },
  *          "delete" = {
  *              "access_control" = "object == user",
  *              "controller" = UserDeleteAction::class,
  *           },
+ *          "get" = { "access_control" = "object == user" },
+ *          "put" = {
+ *              "access_control" = "object == user",
+ *              "denormalization_context" = { "groups" = {"users:put:write"}},
+ *          },
  *     },
  * )
- * @UniqueEntity(fields={"email"})
+ * @UniqueEntity("email", message="This email is already used")
  * @ORM\HasLifecycleCallbacks()
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @see UserCreateAction
  * @see UserDeleteAction
  * @see UserAboutMeAction
+ * @see UserIsUniqueEmailAction
+ * @see UserChangePasswordAction
  */
 class User implements UserInterface, UpdatedAtSettableInterface, CreatedAtSettableInterface, IsDeletedInterface
 {
@@ -69,14 +89,15 @@ class User implements UserInterface, UpdatedAtSettableInterface, CreatedAtSettab
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"users:read", "users:write"})
+     * @Assert\Email()
+     * @ORM\Column(type="string", length=255, unique=true)
+     * @Groups({"users:read", "users:write", "users:put:write"})
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"users:write"})
+     * @Groups({"users:write", "users:changePassword:write"})
      */
     private $password;
 
