@@ -2,7 +2,10 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Component\Core\Interfaces\IsDeletedInterface;
 use App\Controller\UserAboutMeAction;
 use App\Controller\UserChangePasswordAction;
@@ -49,26 +52,31 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     },
  *     itemOperations = {
  *          "changePassword" = {
- *              "access_control" = "object == user",
+ *              "access_control" = "object == user || is_granted('ROLE_ADMIN')",
  *              "controller" = UserChangePasswordAction::class,
  *              "denormalization_context" = { "groups" = {"users:changePassword:write"}},
  *              "method" = "put",
  *              "path" = "users/{id}/password",
  *          },
  *          "delete" = {
- *              "access_control" = "object == user",
+ *              "access_control" = "object == user || is_granted('ROLE_ADMIN')",
  *              "controller" = UserDeleteAction::class,
  *           },
- *          "get" = { "access_control" = "object == user" },
+ *          "get" = { "access_control" = "object == user || is_granted('ROLE_ADMIN')" },
  *          "put" = {
- *              "access_control" = "object == user",
+ *              "access_control" = "object == user || is_granted('ROLE_ADMIN')",
  *              "denormalization_context" = { "groups" = {"users:put:write"}},
  *          },
  *     },
  * )
+ * @ApiFilter(OrderFilter::class, properties={"id", "createdAt", "updatedAt", "email"})
+ * @ApiFilter(SearchFilter::class, properties={"id": "exact", "email": "partial"})
+ *
+ * @ORM\Entity(repositoryClass=UserRepository::class)
  * @UniqueEntity("email", message="This email is already used")
  * @ORM\HasLifecycleCallbacks()
- * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @see OrderFilter
+ * @see SearchFilter
  * @see UserCreateAction
  * @see UserDeleteAction
  * @see UserAboutMeAction
