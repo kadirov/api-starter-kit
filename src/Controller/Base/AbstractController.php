@@ -7,8 +7,10 @@ use ApiPlatform\Core\Validator\ValidatorInterface;
 use App\Component\User\CurrentUser;
 use App\Controller\Base\Constants\ResponseFormat;
 use App\Entity\User;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class AbstractController
@@ -113,5 +115,16 @@ class AbstractController
     protected function getUser(): User
     {
         return $this->currentUser->get();
+    }
+
+    protected function getEntityOrError(ServiceEntityRepository $repository, int $id): object
+    {
+        $user = $repository->find($id);
+
+        if ($user === null) {
+            throw new NotFoundHttpException('Object is not found');
+        }
+
+        return $user;
     }
 }
