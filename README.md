@@ -50,7 +50,9 @@ You can change containers prefix by changing ```DOCKER_PROJECT_NAME``` variable 
 
 Also, you can change public ports of nginx and mysql by changing ```DOCKER_NGINX_PORT``` and ```DOCKER_DATABASE_PORT```
 
-Database allows connections only from localhost. Because of this you should connect to server via ssh bridge if you use this project on production.
+Database allows connections only from localhost. 
+Because of this when you use the project on production and want to connect to database from your computer
+you should connect via ssh bridge.
 
 ## Cron
 
