@@ -65,12 +65,15 @@ class AskInstallCommand extends Command implements GetOutputInterface
     {
         while (true) {
             try {
+                $this->symfonyIO->writeln("Checking database port...");
+
                 $this->entityManager->getConnection()->connect();
                 if ($this->entityManager->getConnection()->isConnected()) {
                     return;
                 }
             } catch (Throwable $exception) {
-                $this->symfonyIO->writeln("MySQL server isn't up yet. Let's wait until it ups...");
+                $this->symfonyIO->writeln("MySQL server isn't up yet. Let's wait until it ups.");
+                $this->symfonyIO->writeln("After few seconds it will automatically checked again...");
                 sleep(10);
             }
         }
