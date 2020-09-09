@@ -63,19 +63,17 @@ class AskInstallCommand extends Command implements GetOutputInterface
 
     private function waitConnection(): void
     {
+        $this->symfonyIO->writeln("Try to connect to database");
+        $this->symfonyIO->writeln("Please, be patiently. First running of MySQL server requires much time");
+
         while (true) {
             try {
-                $this->symfonyIO->writeln("Try to connect to database");
-                $this->symfonyIO->writeln("Please, be patiently. First running of MySQL server requires much time");
-
                 $this->entityManager->getConnection()->connect();
                 if ($this->entityManager->getConnection()->isConnected()) {
                     return;
                 }
             } catch (Throwable $exception) {
-                $this->symfonyIO->writeln("MySQL server isn't up yet. Let's wait until it ups.");
-                $this->symfonyIO->writeln("After few seconds it will automatically checked again...");
-                sleep(60);
+                sleep(5);
             }
         }
     }
