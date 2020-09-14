@@ -25,6 +25,7 @@ class CurrentUser
 
         $user = $token->getUser();
 
+        // if (!$user instanceof JwtUserDto) {
         if (!$user instanceof User) {
             throw new AuthenticationCredentialsNotFoundException('User is not found');
         }

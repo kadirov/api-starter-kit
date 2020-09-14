@@ -1,4 +1,3 @@
-# api/config/packages/security.yaml
 security:
     encoders:
         App\Entity\User:
@@ -6,11 +5,14 @@ security:
 
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
-        # used to reload user from session & other features (e.g. switch_user)
-        app_user_provider:
+        entity_provider:
             entity:
                 class: App\Entity\User
                 property: email
+
+        jwt:
+            lexik_jwt:
+            class: App\Component\User\Dtos\JwtUserDto
 
     firewalls:
         dev:
@@ -24,7 +26,8 @@ security:
         main:
             stateless: true
             anonymous: true
-            provider: app_user_provider
+            provider: entity_provider
+            # provider: jwt # if you use microservices
             json_login:
                 check_path: /api/authentication_token
                 username_path: email
