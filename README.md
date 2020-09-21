@@ -69,7 +69,7 @@ If you don't use any deploying system you can do <br>
 ```cp docker/other-files/git/hooks/post-merge .git/hooks``` 
 
 In this way git always executes command ```bin/console ask:deploy```. 
-You can change this command in the file [src/Command/MyDeployCommand.php](src/Command/AskDeployCommand.php).
+You can change this command in the file [src/Command/AskDeployCommand.php](src/Command/AskDeployCommand.php).
 This command will install requirements via composer, 
 clear caches, change owner of ./var and ./public/media folders to www-data, will run migrations. 
 
