@@ -2,16 +2,18 @@
 
 namespace App\Component\User\Listeners;
 
-use App\Component\User\CurrentUser;
+use App\Component\User\Exceptions\AuthException;
+use App\Repository\UserRepository;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class JWTCreatedListener
 {
-    private CurrentUser $user;
+    private UserRepository $userRepository;
 
-    public function __construct(CurrentUser $user)
+    public function __construct(RequestStack $requestStack, UserRepository $userRepository)
     {
-        $this->user = $user;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -22,11 +24,21 @@ class JWTCreatedListener
     public function onJWTCreated(JWTCreatedEvent $event): void
     {
         $payload = $event->getData();
-        $payload['id'] = $this->user->get()->getId();
+        $payload['id'] = $payload['username'];
+
+        $user = $this->userRepository->find($payload['id']);
+
+        if ($user === null) {
+            throw new AuthException('User is not found');
+        }
+
+        $payload['username'] = $user->getEmail();
+
         $event->setData($payload);
 
         $header = $event->getHeader();
         $header['cty'] = 'JWT';
+
         $event->setHeader($header);
     }
 }
