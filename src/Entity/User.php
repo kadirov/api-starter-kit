@@ -8,6 +8,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Component\Core\Interfaces\IsDeletedInterface;
 use App\Controller\UserAboutMeAction;
+use App\Controller\UserAuthAction;
 use App\Controller\UserChangePasswordAction;
 use App\Controller\UserCreateAction;
 use App\Controller\UserDeleteAction;
@@ -35,8 +36,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  *              "path" = "/users/about_me",
  *          },
  *          "auth" = {
+ *              "controller" = UserAuthAction::class,
  *              "method" = "post",
- *              "path" = "/authentication_token",
+ *              "path" = "/users/auth",
  *          },
  *          "get" = {
  *              "access_control" = "is_granted('ROLE_ADMIN')",
@@ -82,6 +84,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @see UserAboutMeAction
  * @see UserIsUniqueEmailAction
  * @see UserChangePasswordAction
+ * @see UserAuthAction
  */
 class User implements UserInterface, UpdatedAtSettableInterface, CreatedAtSettableInterface, IsDeletedInterface
 {
