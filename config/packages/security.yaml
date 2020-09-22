@@ -12,7 +12,7 @@ security:
 
         jwt:
             lexik_jwt:
-            class: App\Component\User\Dtos\JwtUserDto
+                class: App\Component\User\Dtos\JwtUserDto
 
     firewalls:
         dev:
