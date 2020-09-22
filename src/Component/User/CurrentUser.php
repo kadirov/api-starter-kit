@@ -2,9 +2,9 @@
 
 namespace App\Component\User;
 
+use App\Component\User\Exceptions\AuthException;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Exception\AuthenticationCredentialsNotFoundException;
 
 class CurrentUser
 {
@@ -20,14 +20,14 @@ class CurrentUser
         $token = $this->tokenStorage->getToken();
 
         if ($token === null) {
-            throw new AuthenticationCredentialsNotFoundException('You should be authorized');
+            throw new AuthException('You should be authorized');
         }
 
         $user = $token->getUser();
 
         // if (!$user instanceof JwtUserDto) {
         if (!$user instanceof User) {
-            throw new AuthenticationCredentialsNotFoundException('User is not found');
+            throw new AuthException('User is not found');
         }
 
         return $user;
