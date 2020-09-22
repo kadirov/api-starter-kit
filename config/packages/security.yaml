@@ -18,8 +18,18 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        create_user:
-            pattern: ^/api/users
+        user_auth:
+            pattern: ^/api/users/auth/?$
+            security: false
+            methods:
+                - post
+        user_is_unique_email:
+            pattern: ^/api/users/is_unique_email/?$
+            security: false
+            methods:
+                - post
+        user_create:
+            pattern: ^/api/users/?$
             security: false
             methods:
                 - post
@@ -28,17 +38,10 @@ security:
             anonymous: true
             provider: entity_provider
             # provider: jwt # if you use microservices
-            json_login:
-                check_path: /api/authentication_token
-                username_path: email
-                password_path: password
-                success_handler: lexik_jwt_authentication.handler.authentication_success
-                failure_handler: lexik_jwt_authentication.handler.authentication_failure
             guard:
                 authenticators:
                     - lexik_jwt_authentication.jwt_token_authenticator
 
     access_control:
-        - { path: ^/api/authentication_token, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/.+, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/api, roles: IS_AUTHENTICATED_ANONYMOUSLY } # Allows accessing the Swagger UI
