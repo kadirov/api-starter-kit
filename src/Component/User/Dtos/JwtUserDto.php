@@ -9,12 +9,14 @@ class JwtUserDto implements JWTUserInterface
     private int $id;
     private string $email;
     private array $roles;
+    private int $appId;
 
-    public function __construct(int $id, string $email, array $roles)
+    public function __construct(int $id, string $email, array $roles, int $appId)
     {
         $this->id = $id;
         $this->email = $email;
         $this->roles = $roles;
+        $this->appId = $appId;
     }
 
     public static function createFromPayload($username, array $payload)
@@ -22,13 +24,11 @@ class JwtUserDto implements JWTUserInterface
         return new self(
             $payload['id'],
             $username,
-            $payload['roles']
+            $payload['roles'],
+            $payload['appId'],
         );
     }
 
-    /**
-     * @return string
-     */
     public function getEmail(): string
     {
         return $this->email;
@@ -59,5 +59,10 @@ class JwtUserDto implements JWTUserInterface
     public function getId(): int
     {
         return $this->id;
+    }
+
+    public function getAppId(): int
+    {
+        return $this->appId;
     }
 }

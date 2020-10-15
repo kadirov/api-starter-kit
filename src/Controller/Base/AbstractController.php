@@ -5,6 +5,7 @@ namespace App\Controller\Base;
 use ApiPlatform\Core\Bridge\Symfony\Validator\Exception\ValidationException;
 use ApiPlatform\Core\Validator\ValidatorInterface;
 use App\Component\User\CurrentUser;
+use App\Component\User\Dtos\JwtUserDto;
 use App\Controller\Base\Constants\ResponseFormat;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -109,12 +110,14 @@ class AbstractController
         );
     }
 
-    /**
-     * @return User
-     */
     protected function getUser(): User
     {
-        return $this->currentUser->get();
+        return $this->currentUser->getUser();
+    }
+
+    protected function getJwtUser(): JwtUserDto
+    {
+        return $this->currentUser->getJwtUser();
     }
 
     protected function getEntityOrError(ServiceEntityRepository $repository, int $id): object

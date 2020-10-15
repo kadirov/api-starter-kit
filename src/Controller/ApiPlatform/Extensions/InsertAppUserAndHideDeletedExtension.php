@@ -5,7 +5,7 @@ namespace App\Controller\ApiPlatform\Extensions;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryItemExtensionInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
-use App\Component\User\CurrentUser;
+use App\Controller\Base\AbstractController;
 use App\Entity\User;
 use Doctrine\ORM\QueryBuilder;
 use LogicException;
@@ -15,15 +15,8 @@ use LogicException;
  *
  * @package App\Controller\ApiPlatform\Extensions
  */
-class InsertUserAndHideDeletedExtension implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
+class InsertAppUserAndHideDeletedExtension extends AbstractController implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
 {
-    private CurrentUser $currentUser;
-
-    public function __construct(CurrentUser $currentUser)
-    {
-        $this->currentUser = $currentUser;
-    }
-
     /**
      * Collection operations without id, like GET /users
      *
@@ -75,18 +68,20 @@ class InsertUserAndHideDeletedExtension implements QueryCollectionExtensionInter
 
         switch ($resourceClass) {
 //            case Application::class:
-//                $this->joinEntityAndAddUser('company', $rootTable, $queryBuilder, $this->getUser());
-//                $this->hideDeleted("company", $queryBuilder);
+//                $this->joinEntityAndAddUser($queryBuilder, $rootTable, 'company');
+//                $this->hideDeleted($queryBuilder, "company");
 //                break;
-
+//
 //            case Company::class:
-//                $this->addUser($queryBuilder, $this->getUser(), $rootTable);
-//                $this->hideDeleted($rootTable, $queryBuilder);
+//                $this->addUser($queryBuilder, $rootTable);
+//                $this->hideDeleted($queryBuilder, $rootTable);
 //                break;
 
             case User::class:
 //          case Company::class:
-                $this->hideDeleted($rootTable, $queryBuilder);
+                $this->hideDeleted($queryBuilder, $rootTable);
+                // if you use microservices
+                // $this->addApp($queryBuilder, $rootTable);
                 break;
 
             default:
@@ -94,41 +89,30 @@ class InsertUserAndHideDeletedExtension implements QueryCollectionExtensionInter
         }
     }
 
-    /**
-     * @param string       $entityTable
-     * @param string       $rootTable
-     * @param QueryBuilder $queryBuilder
-     * @param User         $user
-     */
     private function joinEntityAndAddUser(
-        string $entityTable,
-        string $rootTable,
         QueryBuilder $queryBuilder,
-        User $user
+        string $rootTable,
+        string $joinTable
     ): void {
-        $queryBuilder->join("{$rootTable}.{$entityTable}", $entityTable);
+        $queryBuilder->join("{$rootTable}.{$joinTable}", $joinTable);
 
-        $this->addUser($queryBuilder, $user, $entityTable);
+        $this->addUser($queryBuilder, $joinTable);
     }
 
-    /**
-     * @param QueryBuilder $queryBuilder
-     * @param string       $tableName
-     * @param User         $user
-     */
-    private function addUser(QueryBuilder $queryBuilder, User $user, string $tableName): void
+    private function addUser(QueryBuilder $queryBuilder, string $tableName): void
     {
         $queryBuilder->andWhere("{$tableName}.user = :user");
-        $queryBuilder->setParameter('user', $user);
+        $queryBuilder->setParameter('user', $this->getUser()/** or $this->getJwtUser() */);
     }
 
-    private function hideDeleted(string $tableName, QueryBuilder $queryBuilder): void
+    private function hideDeleted(QueryBuilder $queryBuilder, string $tableName): void
     {
         $queryBuilder->andWhere("{$tableName}.isDeleted = false");
     }
 
-    private function getUser(): User
+    private function addApp(QueryBuilder $queryBuilder, string $tableName): void
     {
-        return $this->currentUser->get();
+        $queryBuilder->andWhere("{$tableName}.appId = :appId");
+        $queryBuilder->setParameter('appId', $this->getJwtUser()->getAppId());
     }
 }
