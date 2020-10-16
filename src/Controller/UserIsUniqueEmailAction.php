@@ -30,8 +30,14 @@ class UserIsUniqueEmailAction extends AbstractController
         $checkEmailDto = $this->getDtoFromRequest($request, UserEmailDto::class);
         $this->validate($checkEmailDto);
 
+        $user = $userRepository->findOneByEmail($checkEmailDto->getEmail());
+        /**
+         * uncomment if you use microservices
+         * $user = $userRepository->findOneByEmailAndApp($checkEmailDto->getEmail(), $checkEmailDto->getApp());
+         */
+
         return $this->responseNormalized(
-            ['isUnique' => $userRepository->findOneByEmail($checkEmailDto->getEmail()) === null]
+            ['isUnique' => $user === null]
         );
     }
 }

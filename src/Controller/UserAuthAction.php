@@ -31,6 +31,11 @@ class UserAuthAction extends AbstractController
         $userDto = $this->getDtoFromRequest($request, UserDto::class);
         $user = $userRepository->findOneByEmail($userDto->getEmail());
 
+        /**
+         * or uncomment if you use microservices
+         * $user = $userRepository->findOneByEmailAndApp($userDto->getEmail(), $userDto->getApp());
+         */
+
         if ($user === null) {
             $this->throwInvalidCredentials();
         }
