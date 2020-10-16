@@ -1,5 +1,5 @@
 <?php
-/** Uncomment file if you use microservices */
+/** Uncomment file if you use microservices and run bin/console make:migration */
 //
 //namespace App\Entity;
 //
