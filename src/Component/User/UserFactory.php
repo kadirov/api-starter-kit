@@ -2,6 +2,7 @@
 
 namespace App\Component\User;
 
+use App\Component\User\Dtos\UserDto;
 use App\Component\User\Exceptions\UserFactoryException;
 use App\Entity\User;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -18,17 +19,19 @@ class UserFactory
     }
 
     /**
-     * @param string $email
-     * @param string $plainPassword
+     * @param UserDto $userDto
      * @return User
      * @throws UserFactoryException
      */
-    public function create(string $email, string $plainPassword): User
+    public function create(UserDto $userDto): User
     {
         $user = new User();
 
-        $user->setEmail($email);
-        $this->userManager->hashPassword($user, $plainPassword);
+        $user->setEmail($userDto->getEmail());
+
+        // uncomment if you use microservices
+        // $user->setApp($userDto->getApp());
+        $this->userManager->hashPassword($user, $userDto->getPassword());
 
         $errors = $this->validator->validate($user);
 

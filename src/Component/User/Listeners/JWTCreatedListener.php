@@ -34,6 +34,9 @@ class JWTCreatedListener
 
         $payload['username'] = $user->getEmail();
 
+        /** uncomment if you use microservices */
+        // $payload['appId'] = $user->getApp()->getId();
+
         $event->setData($payload);
 
         $header = $event->getHeader();

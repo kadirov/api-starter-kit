@@ -20,16 +20,15 @@ use App\Entity\Traits\FillUpdatedAtTrait;
 use App\Repository\UserRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
- *     normalizationContext = {"groups" = {"users:read"}},
- *     denormalizationContext = {"groups" = {"users:write"}},
- *     collectionOperations = {
+ *      normalizationContext = {"groups" = {"users:read"}},
+ *      denormalizationContext = {"groups" = {"users:write"}},
+ *      collectionOperations = {
  *          "aboutMe" = {
  *              "controller" = UserAboutMeAction::class,
  *              "method" = "get",
@@ -47,12 +46,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  *              "controller" = UserIsUniqueEmailAction::class,
  *              "method" = "post",
  *              "path" = "users/is_unique_email",
+ *              "denormalization_context" = { "groups" = {"users:isUniqueEmail:write"}},
  *          },
  *          "post" = {
  *              "controller" = UserCreateAction::class,
  *          },
- *     },
- *     itemOperations = {
+ *      },
+ *      itemOperations = {
  *          "changePassword" = {
  *              "access_control" = "object == user || is_granted('ROLE_ADMIN')",
  *              "controller" = UserChangePasswordAction::class,
@@ -69,13 +69,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  *              "access_control" = "object == user || is_granted('ROLE_ADMIN')",
  *              "denormalization_context" = { "groups" = {"users:put:write"}},
  *          },
- *     },
+ *      },
  * )
  * @ApiFilter(OrderFilter::class, properties={"id", "createdAt", "updatedAt", "email"})
  * @ApiFilter(SearchFilter::class, properties={"id": "exact", "email": "partial"})
  *
  * @ORM\Entity(repositoryClass=UserRepository::class)
- * @UniqueEntity("email", message="This email is already used")
  * @ORM\HasLifecycleCallbacks()
  * @see OrderFilter
  * @see SearchFilter
@@ -101,8 +100,8 @@ class User implements UserInterface, UpdatedAtSettableInterface, CreatedAtSettab
 
     /**
      * @Assert\Email()
-     * @ORM\Column(type="string", length=255, unique=true)
-     * @Groups({"users:read", "users:write", "users:put:write"})
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"users:read", "users:write", "users:put:write", "users:isUniqueEmail:write"})
      */
     private $email;
 
@@ -132,6 +131,14 @@ class User implements UserInterface, UpdatedAtSettableInterface, CreatedAtSettab
      * @ORM\Column(type="boolean")
      */
     private $isDeleted = false;
+
+//    /**
+//     * Uncomment if you use microservices
+//     * @ORM\ManyToOne(targetEntity=App::class, inversedBy="users")
+//     * @ORM\JoinColumn(nullable=false)
+//     * @Groups({"users:read", "users:write", "users:isUniqueEmail:write"})
+//     */
+//    private $app;
 
     public function getId(): ?int
     {
@@ -227,4 +234,16 @@ class User implements UserInterface, UpdatedAtSettableInterface, CreatedAtSettab
 
         return $this;
     }
+
+//    public function getApp(): ?App
+//    {
+//        return $this->app;
+//    }
+//
+//    public function setApp(?App $app): self
+//    {
+//        $this->app = $app;
+//
+//        return $this;
+//    }
 }

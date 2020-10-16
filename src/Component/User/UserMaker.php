@@ -26,7 +26,7 @@ class UserMaker
      */
     public function make(UserDto $userDto): User
     {
-        $user = $this->userFactory->create($userDto->getEmail(), $userDto->getPassword());
+        $user = $this->userFactory->create($userDto);
         $this->userManager->save($user, true);
 
         return $user;

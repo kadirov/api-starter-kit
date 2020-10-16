@@ -84,6 +84,10 @@ class InsertAppUserAndHideDeletedExtension extends AbstractController implements
                 // $this->addApp($queryBuilder, $rootTable);
                 break;
 
+//            case App::class:
+//                // do nothing
+//                break;
+
             default:
                 throw new LogicException('Entity is not found');
         }
@@ -102,7 +106,7 @@ class InsertAppUserAndHideDeletedExtension extends AbstractController implements
     private function addUser(QueryBuilder $queryBuilder, string $tableName): void
     {
         $queryBuilder->andWhere("{$tableName}.user = :user");
-        $queryBuilder->setParameter('user', $this->getUser()/** or $this->getJwtUser() */);
+        $queryBuilder->setParameter('user', $this->getUser()/** or $this->getJwtUser() if you use microservices */);
     }
 
     private function hideDeleted(QueryBuilder $queryBuilder, string $tableName): void
