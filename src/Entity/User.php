@@ -7,11 +7,11 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Component\Core\Interfaces\IsDeletedInterface;
+use App\Controller\DeleteAction;
 use App\Controller\UserAboutMeAction;
 use App\Controller\UserAuthAction;
 use App\Controller\UserChangePasswordAction;
 use App\Controller\UserCreateAction;
-use App\Controller\UserDeleteAction;
 use App\Controller\UserIsUniqueEmailAction;
 use App\Entity\Interfaces\CreatedAtSettableInterface;
 use App\Entity\Interfaces\UpdatedAtSettableInterface;
@@ -62,7 +62,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *          },
  *          "delete" = {
  *              "access_control" = "object == user || is_granted('ROLE_ADMIN')",
- *              "controller" = UserDeleteAction::class,
+ *              "controller" = DeleteAction::class,
  *           },
  *          "get" = { "access_control" = "object == user || is_granted('ROLE_ADMIN')" },
  *          "put" = {
@@ -79,11 +79,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @see OrderFilter
  * @see SearchFilter
  * @see UserCreateAction
- * @see UserDeleteAction
  * @see UserAboutMeAction
  * @see UserIsUniqueEmailAction
  * @see UserChangePasswordAction
  * @see UserAuthAction
+ * @see DeleteAction
  */
 class User implements UserInterface, UpdatedAtSettableInterface, CreatedAtSettableInterface, IsDeletedInterface
 {
