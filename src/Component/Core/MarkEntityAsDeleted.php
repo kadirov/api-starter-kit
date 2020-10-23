@@ -3,12 +3,21 @@
 namespace App\Component\Core;
 
 use App\Component\Core\Interfaces\IsDeletedInterface;
+use Doctrine\ORM\EntityManagerInterface;
 
 class MarkEntityAsDeleted
 {
-    public function mark(IsDeletedInterface $entity, AbstractManager $manager): void
+    private EntityManagerInterface $em;
+
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
+    public function mark(IsDeletedInterface $entity): void
     {
         $entity->setIsDeleted(true);
-        $manager->save($entity, true);
+        $this->em->persist($entity);
+        $this->em->flush();
     }
 }
