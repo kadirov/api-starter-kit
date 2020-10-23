@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Controller\ApiPlatform\Extensions;
+namespace App\Controller\Subscribers;
 
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryItemExtensionInterface;
@@ -15,7 +15,7 @@ use LogicException;
  *
  * @package App\Controller\ApiPlatform\Extensions
  */
-class InsertAppUserAndHideDeletedExtension extends AbstractController implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
+class ReadExtension extends AbstractController implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
 {
     /**
      * Collection operations without id, like GET /users
