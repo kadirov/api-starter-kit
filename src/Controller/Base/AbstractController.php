@@ -72,7 +72,7 @@ class AbstractController
      * @param int $status
      * @return Response
      */
-    protected function responseEmpty(int $status = Response::HTTP_OK): Response
+    protected function responseEmpty(int $status = Response::HTTP_NO_CONTENT): Response
     {
         return $this->response('{}', $status);
     }
