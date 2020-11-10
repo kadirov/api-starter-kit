@@ -18,21 +18,31 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+
+        docs_jsonld:
+            pattern: ^/api/docs.jsonld$
+            security: false
+            methods:
+                - get
+
         user_auth:
             pattern: ^/api/users/auth/?$
             security: false
             methods:
                 - post
+
         user_is_unique_email:
             pattern: ^/api/users/is_unique_email/?$
             security: false
             methods:
                 - post
+
         user_create:
             pattern: ^/api/users/?$
             security: false
             methods:
                 - post
+
         main:
             stateless: true
             anonymous: true
