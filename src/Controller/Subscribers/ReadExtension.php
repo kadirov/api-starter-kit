@@ -6,9 +6,9 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryCollectionExtensionInter
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryItemExtensionInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use App\Controller\Base\AbstractController;
-use App\Entity\User;
+use App\Entity\Interfaces\AppIdSettableInterface;
+use App\Entity\Interfaces\IsDeletedSettableInterface;
 use Doctrine\ORM\QueryBuilder;
-use LogicException;
 
 /**
  * Class uses for change all queries to database.
@@ -17,6 +17,8 @@ use LogicException;
  */
 class ReadExtension extends AbstractController implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
 {
+    private array $resourceClassInterfaces = [];
+
     /**
      * Collection operations without id, like GET /users
      *
@@ -65,6 +67,15 @@ class ReadExtension extends AbstractController implements QueryCollectionExtensi
     private function andWhere(QueryBuilder $queryBuilder, string $resourceClass): void
     {
         $rootTable = $queryBuilder->getRootAliases()[0];
+        $this->resourceClassInterfaces = class_implements($resourceClass);
+
+        if ($this->hasResourceClassInterfaceOf(IsDeletedSettableInterface::class)) {
+            $this->hideDeleted($queryBuilder, $rootTable);
+        }
+
+        if ($this->hasResourceClassInterfaceOf(AppIdSettableInterface::class)) {
+            $this->addApp($queryBuilder, $rootTable);
+        }
 
         switch ($resourceClass) {
 //            case Application::class:
@@ -74,22 +85,7 @@ class ReadExtension extends AbstractController implements QueryCollectionExtensi
 //
 //            case Company::class:
 //                $this->addUser($queryBuilder, $rootTable);
-//                $this->hideDeleted($queryBuilder, $rootTable);
 //                break;
-
-            case User::class:
-//          case Company::class:
-                $this->hideDeleted($queryBuilder, $rootTable);
-                // if you use microservices
-                // $this->addApp($queryBuilder, $rootTable);
-                break;
-
-//            case App::class:
-//                // do nothing
-//                break;
-
-            default:
-                throw new LogicException('Entity is not found');
         }
     }
 
@@ -118,5 +114,10 @@ class ReadExtension extends AbstractController implements QueryCollectionExtensi
     {
         $queryBuilder->andWhere("{$tableName}.appId = :appId");
         $queryBuilder->setParameter('appId', $this->getJwtUser()->getAppId());
+    }
+
+    private function hasResourceClassInterfaceOf(string $interfaceName)
+    {
+        return in_array($interfaceName, $this->resourceClassInterfaces, true);
     }
 }
