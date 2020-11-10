@@ -6,7 +6,6 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
-use App\Component\Core\Interfaces\IsDeletedInterface;
 use App\Controller\DeleteAction;
 use App\Controller\UserAboutMeAction;
 use App\Controller\UserAuthAction;
@@ -14,6 +13,7 @@ use App\Controller\UserChangePasswordAction;
 use App\Controller\UserCreateAction;
 use App\Controller\UserIsUniqueEmailAction;
 use App\Entity\Interfaces\CreatedAtSettableInterface;
+use App\Entity\Interfaces\IsDeletedSettableInterface;
 use App\Entity\Interfaces\UpdatedAtSettableInterface;
 use App\Entity\Traits\FillCreatedAtTrait;
 use App\Entity\Traits\FillUpdatedAtTrait;
@@ -85,7 +85,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @see UserAuthAction
  * @see DeleteAction
  */
-class User implements UserInterface, UpdatedAtSettableInterface, CreatedAtSettableInterface, IsDeletedInterface
+class User implements UserInterface, UpdatedAtSettableInterface, CreatedAtSettableInterface, IsDeletedSettableInterface
 {
     use FillCreatedAtTrait;
     use FillUpdatedAtTrait;

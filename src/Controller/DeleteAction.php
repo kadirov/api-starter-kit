@@ -2,13 +2,13 @@
 
 namespace App\Controller;
 
-use App\Component\Core\Interfaces\IsDeletedInterface;
 use App\Component\Core\MarkEntityAsDeleted;
 use App\Controller\Base\AbstractController;
+use App\Entity\Interfaces\IsDeletedSettableInterface;
 
 class DeleteAction extends AbstractController
 {
-    public function __invoke(IsDeletedInterface $data, MarkEntityAsDeleted $markEntityAsDeleted)
+    public function __invoke(IsDeletedSettableInterface $data, MarkEntityAsDeleted $markEntityAsDeleted)
     {
         $markEntityAsDeleted->mark($data);
         return $this->responseEmpty();

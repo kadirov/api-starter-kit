@@ -2,7 +2,6 @@
 
 namespace App\Component\Core;
 
-use App\Component\Core\Interfaces\IsDeletedInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
 abstract class AbstractManager

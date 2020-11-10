@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace App\Component\Core\Interfaces;
+namespace App\Entity\Interfaces;
 
-interface IsDeletedInterface
+interface IsDeletedSettableInterface
 {
     public function setIsDeleted(bool $isDeleted): self;
 }

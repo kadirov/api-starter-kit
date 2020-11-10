@@ -2,7 +2,7 @@
 
 namespace App\Component\Core;
 
-use App\Component\Core\Interfaces\IsDeletedInterface;
+use App\Entity\Interfaces\IsDeletedSettableInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
 class MarkEntityAsDeleted
@@ -14,7 +14,7 @@ class MarkEntityAsDeleted
         $this->em = $em;
     }
 
-    public function mark(IsDeletedInterface $entity): void
+    public function mark(IsDeletedSettableInterface $entity): void
     {
         $entity->setIsDeleted(true);
         $this->em->persist($entity);
