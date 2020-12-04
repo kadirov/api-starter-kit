@@ -37,4 +37,5 @@ WORKDIR /var/www/html
 
 COPY cron-file /etc/cron.d/cron-file
 COPY run-deamons.sh /run-deamons.sh
-ENTRYPOINT /run-deamons.sh
+
+ENTRYPOINT /bin/bash /run-deamons.sh
