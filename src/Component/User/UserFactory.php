@@ -5,6 +5,7 @@ namespace App\Component\User;
 use App\Component\User\Dtos\UserDto;
 use App\Component\User\Exceptions\UserFactoryException;
 use App\Entity\User;
+use DateTime;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UserFactory
@@ -28,6 +29,7 @@ class UserFactory
         $user = new User();
 
         $user->setEmail($userDto->getEmail());
+        $user->setCreatedAt(new DateTime());
 
         // uncomment if you use microservices
         // $user->setApp($userDto->getApp());

@@ -15,8 +15,6 @@ use App\Controller\UserIsUniqueEmailAction;
 use App\Entity\Interfaces\CreatedAtSettableInterface;
 use App\Entity\Interfaces\IsDeletedSettableInterface;
 use App\Entity\Interfaces\UpdatedAtSettableInterface;
-use App\Entity\Traits\FillCreatedAtTrait;
-use App\Entity\Traits\FillUpdatedAtTrait;
 use App\Repository\UserRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
@@ -75,7 +73,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiFilter(SearchFilter::class, properties={"id": "exact", "email": "partial"})
  *
  * @ORM\Entity(repositoryClass=UserRepository::class)
- * @ORM\HasLifecycleCallbacks()
  * @see OrderFilter
  * @see SearchFilter
  * @see UserCreateAction
@@ -85,11 +82,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @see UserAuthAction
  * @see DeleteAction
  */
-class User implements UserInterface, UpdatedAtSettableInterface, CreatedAtSettableInterface, IsDeletedSettableInterface
+class User implements
+    UserInterface,
+    UpdatedAtSettableInterface,
+    CreatedAtSettableInterface,
+    IsDeletedSettableInterface
 {
-    use FillCreatedAtTrait;
-    use FillUpdatedAtTrait;
-
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
