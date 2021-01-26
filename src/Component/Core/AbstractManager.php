@@ -2,6 +2,8 @@
 
 namespace App\Component\Core;
 
+use App\Entity\Interfaces\UpdatedAtSettableInterface;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 
 abstract class AbstractManager
@@ -20,6 +22,10 @@ abstract class AbstractManager
 
     public function save(object $entity, bool $needToFlush = false): void
     {
+        if ($entity->getId() !== null && $entity instanceof UpdatedAtSettableInterface) {
+            $entity->setUpdatedAt(new DateTime());
+        }
+
         $this->getEntityManager()->persist($entity);
 
         if ($needToFlush) {
