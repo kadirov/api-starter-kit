@@ -25,6 +25,12 @@ security:
             methods:
                 - get
 
+        contexts_entrypoint:
+            pattern: ^/api/contexts/Entrypoint$
+            security: false
+            methods:
+                - get
+
         user_auth:
             pattern: ^/api/users/auth/?$
             security: false
