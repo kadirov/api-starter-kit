@@ -182,6 +182,15 @@ class User implements
         return $this;
     }
 
+    public function addRole(string $role): self
+    {
+        if (!in_array($role, $this->roles, true)) {
+            $this->roles[] = $role;
+        }
+
+        return $this;
+    }
+
     public function getSalt()
     {
         // TODO: Implement getSalt() method.
