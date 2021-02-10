@@ -116,7 +116,7 @@ class ReadExtension extends AbstractController implements QueryCollectionExtensi
         $queryBuilder->setParameter('appId', $this->getJwtUser()->getAppId());
     }
 
-    private function hasResourceClassInterfaceOf(string $interfaceName)
+    private function hasResourceClassInterfaceOf(string $interfaceName): bool
     {
         return in_array($interfaceName, $this->resourceClassInterfaces, true);
     }

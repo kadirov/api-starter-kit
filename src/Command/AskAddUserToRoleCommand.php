@@ -26,7 +26,7 @@ class AskAddUserToRoleCommand extends Command
         $this->userManager = $userManager;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setDescription('Adds user to a role');
     }
