@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Controller\Subscribers;
@@ -12,6 +13,7 @@ use App\Entity\Interfaces\UserIdSettableInterface;
 use App\Entity\Interfaces\UserSettableInterface;
 use DateTime;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -27,14 +29,13 @@ class WriteSubscriber extends AbstractController implements EventSubscriberInter
     public function insertSubscriber(ViewEvent $event): void
     {
         $model = $event->getControllerResult();
-        $method = strtolower($event->getRequest()->getMethod());
 
-        switch ($method) {
-            case 'post':
+        switch ($event->getRequest()->getMethod()) {
+            case Request::METHOD_POST:
                 $this->persist($model);
                 break;
 
-            case 'put':
+            case Request::METHOD_PUT:
                 $this->update($model);
                 break;
         }
