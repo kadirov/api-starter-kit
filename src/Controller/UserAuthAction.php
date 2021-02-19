@@ -1,16 +1,27 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Controller;
 
 use App\Component\User\Dtos\UserDto;
 use App\Component\User\Exceptions\AuthException;
+use App\Component\User\TokensCreator;
 use App\Controller\Base\AbstractController;
 use App\Repository\UserRepository;
+use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTEncodeFailureException;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
+/**
+ * Class UserAuthAction
+ *
+ * @method UserDto getDtoFromRequest(Request $request, string $dtoClass)
+ * @package App\Controller
+ */
 class UserAuthAction extends AbstractController
 {
     /**
@@ -18,16 +29,19 @@ class UserAuthAction extends AbstractController
      * @param UserRepository               $userRepository
      * @param UserPasswordEncoderInterface $passwordEncoder
      * @param JWTTokenManagerInterface     $tokenManager
+     * @param JWTEncoderInterface          $tokenEncoder
+     * @param TokensCreator                $tokensCreator
      * @return Response
-     * @throws AuthException
+     * @throws JWTEncodeFailureException
      */
     public function __invoke(
         Request $request,
         UserRepository $userRepository,
         UserPasswordEncoderInterface $passwordEncoder,
-        JWTTokenManagerInterface $tokenManager
+        JWTTokenManagerInterface $tokenManager,
+        JWTEncoderInterface $tokenEncoder,
+        TokensCreator $tokensCreator
     ): Response {
-        /** @var UserDto $userDto */
         $userDto = $this->getDtoFromRequest($request, UserDto::class);
         $user = $userRepository->findOneByEmail($userDto->getEmail());
 
@@ -44,9 +58,7 @@ class UserAuthAction extends AbstractController
             $this->throwInvalidCredentials();
         }
 
-        $tokenManager->setUserIdentityField('id');
-
-        return $this->responseNormalized(['token' => $tokenManager->create($user)]);
+        return $this->responseNormalized($tokensCreator->create($user));
     }
 
     /**

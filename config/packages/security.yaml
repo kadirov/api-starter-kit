@@ -32,7 +32,13 @@ security:
                 - get
 
         user_auth:
-            pattern: ^/api/users/auth/?$
+            pattern: ^/api/users/auth$
+            security: false
+            methods:
+                - post
+
+        user_auth_refreshToken:
+            pattern: ^/api/users/auth/refreshToken$
             security: false
             methods:
                 - post

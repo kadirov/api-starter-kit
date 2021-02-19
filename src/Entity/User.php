@@ -6,9 +6,11 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use App\Component\User\Dtos\RefreshTokenRequestDto;
 use App\Controller\DeleteAction;
 use App\Controller\UserAboutMeAction;
 use App\Controller\UserAuthAction;
+use App\Controller\UserAuthByRefreshTokenAction;
 use App\Controller\UserChangePasswordAction;
 use App\Controller\UserCreateAction;
 use App\Controller\UserIsUniqueEmailAction;
@@ -27,6 +29,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      normalizationContext = {"groups" = {"users:read"}},
  *      denormalizationContext = {"groups" = {"users:write"}},
  *      collectionOperations = {
+ *          "get" = {
+ *              "access_control" = "is_granted('ROLE_ADMIN')",
+ *          },
+ *          "post" = {
+ *              "controller" = UserCreateAction::class,
+ *          },
  *          "aboutMe" = {
  *              "controller" = UserAboutMeAction::class,
  *              "method" = "get",
@@ -37,17 +45,17 @@ use Symfony\Component\Validator\Constraints as Assert;
  *              "method" = "post",
  *              "path" = "/users/auth",
  *          },
- *          "get" = {
- *              "access_control" = "is_granted('ROLE_ADMIN')",
+ *          "authByRefreshToken" = {
+ *              "controller" = UserAuthByRefreshTokenAction::class,
+ *              "method" = "post",
+ *              "path" = "/users/auth/refreshToken",
+ *              "input" = RefreshTokenRequestDto::class,
  *          },
  *          "isUniqueEmail" = {
  *              "controller" = UserIsUniqueEmailAction::class,
  *              "method" = "post",
  *              "path" = "users/is_unique_email",
  *              "denormalization_context" = { "groups" = {"users:isUniqueEmail:write"}},
- *          },
- *          "post" = {
- *              "controller" = UserCreateAction::class,
  *          },
  *      },
  *      itemOperations = {
@@ -61,7 +69,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *          "delete" = {
  *              "access_control" = "object == user || is_granted('ROLE_ADMIN')",
  *              "controller" = DeleteAction::class,
- *           },
+ *          },
  *          "get" = { "access_control" = "object == user || is_granted('ROLE_ADMIN')" },
  *          "put" = {
  *              "access_control" = "object == user || is_granted('ROLE_ADMIN')",
@@ -81,6 +89,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @see UserChangePasswordAction
  * @see UserAuthAction
  * @see DeleteAction
+ * @see UserAuthByRefreshTokenAction
+ * @see RefreshTokenRequestDto
  */
 class User implements
     UserInterface,
