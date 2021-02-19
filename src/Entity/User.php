@@ -127,11 +127,13 @@ class User implements
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"users:read"})
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Groups({"users:read"})
      */
     private $updatedAt;
 
