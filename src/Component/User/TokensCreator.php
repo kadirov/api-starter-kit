@@ -8,20 +8,20 @@ use App\Component\User\Dtos\TokensDto;
 use App\Entity\User;
 use DateInterval;
 use DateTime;
+use Exception;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTEncodeFailureException;
-use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 class TokensCreator
 {
     private JWTEncoderInterface $tokenEncoder;
-    private JWTTokenManagerInterface $tokenManager;
+    private KernelInterface $kernel;
 
-    public function __construct(JWTEncoderInterface $tokenEncoder, JWTTokenManagerInterface $tokenManager)
+    public function __construct(JWTEncoderInterface $tokenEncoder, KernelInterface $kernel)
     {
         $this->tokenEncoder = $tokenEncoder;
-        $this->tokenManager = $tokenManager;
+        $this->kernel = $kernel;
     }
 
     /**
@@ -38,20 +38,44 @@ class TokensCreator
      * @param int $userId
      * @return string
      * @throws JWTEncodeFailureException
+     * @throws Exception
      */
     private function generateRefreshToken(int $userId): string
     {
+        $expInterval = new DateInterval($this->getEnv('tokens_creator.refresh_expiration_period'));
+
         return $this->tokenEncoder->encode(
             [
                 'id'  => $userId,
-                'exp' => (new DateTime())->add(new DateInterval('P6M'))->getTimestamp(),
+                'iat' => (new DateTime())->getTimestamp(),
+                'exp' => (new DateTime())->add($expInterval)->getTimestamp(),
             ]
         );
     }
 
-    private function generateAccessToken(UserInterface $user): string
+    /**
+     * @param User $user
+     * @return string
+     * @throws JWTEncodeFailureException
+     * @throws Exception
+     */
+    private function generateAccessToken(User $user): string
     {
-        $this->tokenManager->setUserIdentityField('id');
-        return $this->tokenManager->create($user);
+        $expInterval = new DateInterval($this->getEnv('tokens_creator.access_expiration_period'));
+
+        return $this->tokenEncoder->encode(
+            [
+                'iat'      => (new DateTime())->getTimestamp(),
+                'exp'      => (new DateTime())->add($expInterval)->getTimestamp(),
+                'id'       => $user->getId(),
+                'username' => $user->getEmail(),
+                'roles'    => $user->getRoles(),
+            ]
+        );
+    }
+
+    private function getEnv(string $envName): string
+    {
+        return $this->kernel->getContainer()->getParameter($envName);
     }
 }

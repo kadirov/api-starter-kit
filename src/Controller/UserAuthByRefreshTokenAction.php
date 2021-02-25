@@ -9,8 +9,11 @@ use App\Component\User\Dtos\RefreshTokenRequestDto;
 use App\Component\User\Exceptions\AuthException;
 use App\Component\User\TokensCreator;
 use App\Controller\Base\AbstractController;
+use App\Controller\Base\Constants\ResponseFormat;
 use App\Repository\UserRepository;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
+use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTEncodeFailureException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -25,6 +28,18 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
  */
 class UserAuthByRefreshTokenAction extends AbstractController
 {
+    /**
+     * @param Request                      $request
+     * @param UserRepository               $userRepository
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param JWTEncoderInterface          $tokenEncoder
+     * @param TokensCreator                $tokensCreator
+     * @param DenormalizerInterface        $denormalizer
+     * @return Response
+     * @throws ExceptionInterface
+     * @throws JWTDecodeFailureException
+     * @throws JWTEncodeFailureException
+     */
     public function __invoke(
         Request $request,
         UserRepository $userRepository,
@@ -46,7 +61,7 @@ class UserAuthByRefreshTokenAction extends AbstractController
             $this->throwInvalidCredentials();
         }
 
-        return $this->responseNormalized($tokensCreator->create($user));
+        return $this->responseNormalized($tokensCreator->create($user), Response::HTTP_OK, ResponseFormat::JSON);
     }
 
     /**

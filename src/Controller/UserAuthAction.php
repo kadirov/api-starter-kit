@@ -8,6 +8,7 @@ use App\Component\User\Dtos\UserDto;
 use App\Component\User\Exceptions\AuthException;
 use App\Component\User\TokensCreator;
 use App\Controller\Base\AbstractController;
+use App\Controller\Base\Constants\ResponseFormat;
 use App\Repository\UserRepository;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTEncodeFailureException;
@@ -58,7 +59,7 @@ class UserAuthAction extends AbstractController
             $this->throwInvalidCredentials();
         }
 
-        return $this->responseNormalized($tokensCreator->create($user));
+        return $this->responseNormalized($tokensCreator->create($user), Response::HTTP_OK, ResponseFormat::JSON);
     }
 
     /**

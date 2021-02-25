@@ -4,8 +4,6 @@ namespace App\Controller\Base\Constants;
 
 class ResponseFormat
 {
-    /**
-     * jsonld
-     */
+    public const JSON = 'json';
     public const JSONLD = 'jsonld';
 }
