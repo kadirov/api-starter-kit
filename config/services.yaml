@@ -4,8 +4,8 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    tokens_creator.access_expiration_period: '%env(TOKENS_ACCESS_EXPIRATION_PERIOD)%'
-    tokens_creator.refresh_expiration_period: '%env(TOKENS_REFRESH_EXPIRATION_PERIOD)%'
+    tokens_creator.access_expiration_period: '%env(TOKEN_ACCESS_EXPIRATION_PERIOD)%'
+    tokens_creator.refresh_expiration_period: '%env(TOKEN_REFRESH_EXPIRATION_PERIOD)%'
 
 
 services:
