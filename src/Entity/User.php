@@ -30,7 +30,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      denormalizationContext = {"groups" = {"users:write"}},
  *      collectionOperations = {
  *          "get" = {
- *              "access_control" = "is_granted('ROLE_ADMIN')",
+ *              "security" = "is_granted('ROLE_ADMIN')",
  *          },
  *          "post" = {
  *              "controller" = UserCreateAction::class,
@@ -60,19 +60,19 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      },
  *      itemOperations = {
  *          "changePassword" = {
- *              "access_control" = "object == user || is_granted('ROLE_ADMIN')",
+ *              "security" = "object == user || is_granted('ROLE_ADMIN')",
  *              "controller" = UserChangePasswordAction::class,
  *              "denormalization_context" = { "groups" = {"users:changePassword:write"}},
  *              "method" = "put",
  *              "path" = "users/{id}/password",
  *          },
  *          "delete" = {
- *              "access_control" = "object == user || is_granted('ROLE_ADMIN')",
+ *              "security" = "object == user || is_granted('ROLE_ADMIN')",
  *              "controller" = DeleteAction::class,
  *          },
  *          "get" = { "access_control" = "object == user || is_granted('ROLE_ADMIN')" },
  *          "put" = {
- *              "access_control" = "object == user || is_granted('ROLE_ADMIN')",
+ *              "security" = "object == user || is_granted('ROLE_ADMIN')",
  *              "denormalization_context" = { "groups" = {"users:put:write"}},
  *          },
  *      },
