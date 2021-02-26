@@ -34,11 +34,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  *          },
  *          "post" = {
  *              "controller" = UserCreateAction::class,
+ *              "normalization_context" = { "groups" = {"user:read", "users:read"}},
  *          },
  *          "aboutMe" = {
  *              "controller" = UserAboutMeAction::class,
  *              "method" = "get",
  *              "path" = "/users/about_me",
+ *              "normalization_context" = { "groups" = {"user:read", "users:read"}},
  *          },
  *          "auth" = {
  *              "controller" = UserAuthAction::class,
@@ -55,6 +57,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *              "controller" = UserIsUniqueEmailAction::class,
  *              "method" = "post",
  *              "path" = "users/is_unique_email",
+ *              "normalization_context" = { "groups" = {"user:read", "users:read"}},
  *              "denormalization_context" = { "groups" = {"users:isUniqueEmail:write"}},
  *          },
  *      },
@@ -62,6 +65,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *          "changePassword" = {
  *              "security" = "object == user || is_granted('ROLE_ADMIN')",
  *              "controller" = UserChangePasswordAction::class,
+ *              "normalization_context" = { "groups" = {"user:read", "users:read"}},
  *              "denormalization_context" = { "groups" = {"users:changePassword:write"}},
  *              "method" = "put",
  *              "path" = "users/{id}/password",
@@ -70,9 +74,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  *              "security" = "object == user || is_granted('ROLE_ADMIN')",
  *              "controller" = DeleteAction::class,
  *          },
- *          "get" = { "access_control" = "object == user || is_granted('ROLE_ADMIN')" },
+ *          "get" = {
+ *              "security" = "object == user || is_granted('ROLE_ADMIN')"
+ *              "normalization_context" = { "groups" = {"user:read", "users:read"}},
+ *          },
  *          "put" = {
  *              "security" = "object == user || is_granted('ROLE_ADMIN')",
+ *              "normalization_context" = { "groups" = {"user:read", "users:read"}},
  *              "denormalization_context" = { "groups" = {"users:put:write"}},
  *          },
  *      },
@@ -102,14 +110,14 @@ class User implements
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"users:read"})
+     * @Groups({"user:read", "users:read"})
      */
     private $id;
 
     /**
      * @Assert\Email()
      * @ORM\Column(type="string", length=255)
-     * @Groups({"users:read", "users:write", "users:put:write", "users:isUniqueEmail:write"})
+     * @Groups({"user:read", "users:read", "users:write", "users:put:write", "users:isUniqueEmail:write"})
      */
     private $email;
 
@@ -121,19 +129,19 @@ class User implements
 
     /**
      * @ORM\Column(type="array")
-     * @Groups({"users:read"})
+     * @Groups({"user:read"})
      */
     private $roles = [];
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"users:read"})
+     * @Groups({"user:read"})
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
-     * @Groups({"users:read"})
+     * @Groups({"user:read"})
      */
     private $updatedAt;
 
