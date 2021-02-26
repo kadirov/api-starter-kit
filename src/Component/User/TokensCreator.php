@@ -70,6 +70,8 @@ class TokensCreator
                 'id'       => $user->getId(),
                 'username' => $user->getEmail(),
                 'roles'    => $user->getRoles(),
+                // uncomment if you use microservices
+                // 'appId'    => $user->getApp()->getId(),
             ]
         );
     }
