@@ -110,14 +110,14 @@ class User implements
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"user:read", "users:read"})
+     * @Groups({"users:read"})
      */
     private $id;
 
     /**
      * @Assert\Email()
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user:read", "users:read", "users:write", "users:put:write", "users:isUniqueEmail:write"})
+     * @Groups({"users:read", "users:write", "users:put:write", "users:isUniqueEmail:write"})
      */
     private $email;
 
