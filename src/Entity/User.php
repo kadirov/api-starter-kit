@@ -75,7 +75,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *              "controller" = DeleteAction::class,
  *          },
  *          "get" = {
- *              "security" = "object == user || is_granted('ROLE_ADMIN')"
+ *              "security" = "object == user || is_granted('ROLE_ADMIN')",
  *              "normalization_context" = { "groups" = {"user:read", "users:read"}},
  *          },
  *          "put" = {
