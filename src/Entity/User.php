@@ -26,21 +26,20 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
- *      normalizationContext = {"groups" = {"users:read"}},
- *      denormalizationContext = {"groups" = {"users:write"}},
+ *      normalizationContext = {"groups" = {"user:read", "users:read"}},
+ *      denormalizationContext = {"groups" = {"user:write"}},
  *      collectionOperations = {
  *          "get" = {
  *              "security" = "is_granted('ROLE_ADMIN')",
+ *              "normalization_context" = { "groups" = {"users:read"}},
  *          },
  *          "post" = {
  *              "controller" = UserCreateAction::class,
- *              "normalization_context" = { "groups" = {"user:read", "users:read"}},
  *          },
  *          "aboutMe" = {
  *              "controller" = UserAboutMeAction::class,
  *              "method" = "get",
  *              "path" = "/users/about_me",
- *              "normalization_context" = { "groups" = {"user:read", "users:read"}},
  *          },
  *          "auth" = {
  *              "controller" = UserAuthAction::class,
@@ -57,16 +56,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  *              "controller" = UserIsUniqueEmailAction::class,
  *              "method" = "post",
  *              "path" = "users/is_unique_email",
- *              "normalization_context" = { "groups" = {"user:read", "users:read"}},
- *              "denormalization_context" = { "groups" = {"users:isUniqueEmail:write"}},
+ *              "denormalization_context" = { "groups" = {"user:isUniqueEmail:write"}},
  *          },
  *      },
  *      itemOperations = {
  *          "changePassword" = {
  *              "security" = "object == user || is_granted('ROLE_ADMIN')",
  *              "controller" = UserChangePasswordAction::class,
- *              "normalization_context" = { "groups" = {"user:read", "users:read"}},
- *              "denormalization_context" = { "groups" = {"users:changePassword:write"}},
+ *              "denormalization_context" = { "groups" = {"user:changePassword:write"}},
  *              "method" = "put",
  *              "path" = "users/{id}/password",
  *          },
@@ -76,15 +73,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  *          },
  *          "get" = {
  *              "security" = "object == user || is_granted('ROLE_ADMIN')",
- *              "normalization_context" = { "groups" = {"user:read", "users:read"}},
  *          },
  *          "put" = {
  *              "security" = "object == user || is_granted('ROLE_ADMIN')",
- *              "normalization_context" = { "groups" = {"user:read", "users:read"}},
- *              "denormalization_context" = { "groups" = {"users:put:write"}},
+ *              "denormalization_context" = { "groups" = {"user:put:write"}},
  *          },
  *      },
  * )
+ *
  * @ApiFilter(OrderFilter::class, properties={"id", "createdAt", "updatedAt", "email"})
  * @ApiFilter(SearchFilter::class, properties={"id": "exact", "email": "partial"})
  *
@@ -117,13 +113,13 @@ class User implements
     /**
      * @Assert\Email()
      * @ORM\Column(type="string", length=255)
-     * @Groups({"users:read", "users:write", "users:put:write", "users:isUniqueEmail:write"})
+     * @Groups({"users:read", "user:write", "user:put:write", "user:isUniqueEmail:write"})
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"users:write", "users:changePassword:write"})
+     * @Groups({"user:write", "user:changePassword:write"})
      */
     private $password;
 
