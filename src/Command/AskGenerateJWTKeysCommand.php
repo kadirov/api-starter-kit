@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Command;
@@ -43,9 +44,19 @@ class AskGenerateJWTKeysCommand extends Command implements GetOutputInterface
         $this->symfonyIO = new SymfonyStyle($input, $output);
         $this->output = $output;
 
+        $this->createJwtFolder();
         $this->createPassphrase();
         $this->allowAccessToPrivateKey();
         return 0;
+    }
+
+    private function createJwtFolder(): void
+    {
+        $this->runSystemCommandAndNotify(
+            'mkdir -p config/jwt',
+            'Created config/jwt folder',
+            'Could not create folder config/jwt'
+        );
     }
 
     private function createPassphrase(): void
