@@ -6,7 +6,6 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryCollectionExtensionInter
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryItemExtensionInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use App\Controller\Base\AbstractController;
-use App\Entity\Interfaces\AppIdSettableInterface;
 use App\Entity\Interfaces\IsDeletedSettableInterface;
 use Doctrine\ORM\QueryBuilder;
 
@@ -73,10 +72,6 @@ class ReadExtension extends AbstractController implements QueryCollectionExtensi
             $this->hideDeleted($queryBuilder, $rootTable);
         }
 
-        if ($this->hasResourceClassInterfaceOf(AppIdSettableInterface::class)) {
-            $this->addApp($queryBuilder, $rootTable);
-        }
-
         switch ($resourceClass) {
 //            case Application::class:
 //                $this->joinEntityAndAddUser($queryBuilder, $rootTable, 'company');
@@ -108,12 +103,6 @@ class ReadExtension extends AbstractController implements QueryCollectionExtensi
     private function hideDeleted(QueryBuilder $queryBuilder, string $tableName): void
     {
         $queryBuilder->andWhere("{$tableName}.isDeleted = false");
-    }
-
-    private function addApp(QueryBuilder $queryBuilder, string $tableName): void
-    {
-        $queryBuilder->andWhere("{$tableName}.appId = :appId");
-        $queryBuilder->setParameter('appId', $this->getJwtUser()->getAppId());
     }
 
     private function hasResourceClassInterfaceOf(string $interfaceName): bool

@@ -22,12 +22,6 @@ class UserDto
      */
     private string $password;
 
-//    /**
-//     * Uncomment if you use microservices
-//     * @Assert\NotBlank()
-//     */
-//    private App $app;
-
     public function __construct(string $email, string $password /*, App $app */)
     {
         $this->email = $email;

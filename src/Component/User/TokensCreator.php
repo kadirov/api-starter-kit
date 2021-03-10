@@ -35,25 +35,6 @@ class TokensCreator
     }
 
     /**
-     * @param int $userId
-     * @return string
-     * @throws JWTEncodeFailureException
-     * @throws Exception
-     */
-    private function generateRefreshToken(int $userId): string
-    {
-        $expInterval = new DateInterval($this->getEnv('tokens_creator.refresh_expiration_period'));
-
-        return $this->tokenEncoder->encode(
-            [
-                'id'  => $userId,
-                'iat' => (new DateTime())->getTimestamp(),
-                'exp' => (new DateTime())->add($expInterval)->getTimestamp(),
-            ]
-        );
-    }
-
-    /**
      * @param User $user
      * @return string
      * @throws JWTEncodeFailureException
@@ -70,8 +51,6 @@ class TokensCreator
                 'id'       => $user->getId(),
                 'username' => $user->getEmail(),
                 'roles'    => $user->getRoles(),
-                // uncomment if you use microservices
-                // 'appId'    => $user->getApp()->getId(),
             ]
         );
     }
@@ -79,5 +58,24 @@ class TokensCreator
     private function getEnv(string $envName): string
     {
         return $this->kernel->getContainer()->getParameter($envName);
+    }
+
+    /**
+     * @param int $userId
+     * @return string
+     * @throws JWTEncodeFailureException
+     * @throws Exception
+     */
+    private function generateRefreshToken(int $userId): string
+    {
+        $expInterval = new DateInterval($this->getEnv('tokens_creator.refresh_expiration_period'));
+
+        return $this->tokenEncoder->encode(
+            [
+                'id'  => $userId,
+                'iat' => (new DateTime())->getTimestamp(),
+                'exp' => (new DateTime())->add($expInterval)->getTimestamp(),
+            ]
+        );
     }
 }

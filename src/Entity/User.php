@@ -150,14 +150,6 @@ class User implements
      */
     private $isDeleted = false;
 
-//    /**
-//     * Uncomment if you use microservices
-//     * @ORM\ManyToOne(targetEntity=App::class, inversedBy="users")
-//     * @ORM\JoinColumn(nullable=false)
-//     * @Groups({"users:read", "users:write", "users:isUniqueEmail:write"})
-//     */
-//    private $app;
-
     public function getId(): ?int
     {
         return $this->id;

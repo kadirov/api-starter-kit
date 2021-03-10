@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Component\User\Dtos;
 
@@ -9,29 +11,21 @@ class JwtUserDto implements JWTUserInterface
     private int $id;
     private string $email;
     private array $roles;
-    private int $appId;
 
-    public function __construct(int $id, string $email, array $roles, int $appId)
+    public function __construct(int $id, string $email, array $roles)
     {
         $this->id = $id;
         $this->email = $email;
         $this->roles = $roles;
-        $this->appId = $appId;
     }
 
-    public static function createFromPayload($username, array $payload)
+    public static function createFromPayload($username, array $payload): JwtUserDto
     {
         return new self(
             $payload['id'],
             $username,
-            $payload['roles'],
-            $payload['appId'],
+            $payload['roles']
         );
-    }
-
-    public function getEmail(): string
-    {
-        return $this->email;
     }
 
     public function getRoles(): array
@@ -52,6 +46,11 @@ class JwtUserDto implements JWTUserInterface
         return $this->getEmail();
     }
 
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
     public function eraseCredentials(): void
     {
     }
@@ -59,10 +58,5 @@ class JwtUserDto implements JWTUserInterface
     public function getId(): int
     {
         return $this->id;
-    }
-
-    public function getAppId(): int
-    {
-        return $this->appId;
     }
 }

@@ -31,8 +31,6 @@ class UserFactory
         $user->setEmail($userDto->getEmail());
         $user->setCreatedAt(new DateTime());
 
-        // uncomment if you use microservices
-        // $user->setApp($userDto->getApp());
         $this->userManager->hashPassword($user, $userDto->getPassword());
 
         $errors = $this->validator->validate($user);

@@ -51,10 +51,6 @@ class WriteSubscriber extends AbstractController implements EventSubscriberInter
             $model->setUserId($this->getJwtUser()->getId());
         }
 
-        if ($model instanceof AppIdSettableInterface) {
-            $model->setAppId($this->getJwtUser()->getAppId());
-        }
-
         if ($model instanceof CreatedAtSettableInterface) {
             $model->setCreatedAt(new DateTime());
         }

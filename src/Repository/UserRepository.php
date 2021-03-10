@@ -24,15 +24,6 @@ class UserRepository extends ServiceEntityRepository
         return $this->findOneBy(['email' => $email]);
     }
 
-//    uncomment if you use microservices
-//    public function findOneByEmailAndApp(string $email, App $app): ?User
-//    {
-//        return $this->findOneBy([
-//            'email' => $email,
-//            'app'   => $app,
-//        ]);
-//    }
-
     // /**
     //  * @return User[] Returns an array of User objects
     //  */
