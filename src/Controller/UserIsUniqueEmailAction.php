@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Controller;
 
@@ -11,22 +13,16 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Class CheckEmailController
  *
+ * @method UserEmailDto getDtoFromRequest(Request $request, string $dtoClass)
+ *
  * @package App\Controller
  */
 class UserIsUniqueEmailAction extends AbstractController
 {
-    /**
-     * @param Request        $request
-     * @param UserRepository $userRepository
-     * @return Response
-     */
     public function __invoke(
         Request $request,
         UserRepository $userRepository
-    ) {
-        /**
-         * @var UserEmailDto $checkEmailDto
-         */
+    ): Response {
         $checkEmailDto = $this->getDtoFromRequest($request, UserEmailDto::class);
         $this->validate($checkEmailDto);
 

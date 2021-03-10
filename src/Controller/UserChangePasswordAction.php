@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Controller;
 
@@ -7,11 +9,14 @@ use App\Component\User\UserManager;
 use App\Controller\Base\AbstractController;
 use App\Entity\User;
 use App\Repository\UserRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class CreateUserController
+ *
+ * @method User getEntityOrError(ServiceEntityRepository $repository, int $id)
+ * @method UserPasswordDto getDtoFromRequest(Request $request, string $dtoClass)
  *
  * @package App\Controller
  */
@@ -22,17 +27,15 @@ class UserChangePasswordAction extends AbstractController
         UserManager $userManager,
         UserRepository $repository,
         int $id
-    ): Response {
-        /** @var User $user */
+    ): User {
         $user = $this->getEntityOrError($repository, $id);
-
-        /** @var UserPasswordDto $userDto */
         $userDto = $this->getDtoFromRequest($request, UserPasswordDto::class);
+
         $this->validate($userDto);
 
         $userManager->hashPassword($user, $userDto->getPassword());
         $userManager->save($user, true);
 
-        return $this->responseNormalized($user);
+        return $user;
     }
 }

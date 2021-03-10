@@ -1,14 +1,16 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Controller;
 
 use App\Controller\Base\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
+use App\Entity\User;
 
 class UserAboutMeAction extends AbstractController
 {
-    public function __invoke(): Response
+    public function __invoke(): User
     {
-        return $this->responseNormalized($this->getUser());
+        return $this->getUser();
     }
 }
