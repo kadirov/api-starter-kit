@@ -20,6 +20,7 @@ use App\Entity\Interfaces\UpdatedAtSettableInterface;
 use App\Repository\UserRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -84,6 +85,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiFilter(OrderFilter::class, properties={"id", "createdAt", "updatedAt", "email"})
  * @ApiFilter(SearchFilter::class, properties={"id": "exact", "email": "partial"})
  *
+ * @UniqueEntity("email", message="This email is already used")
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @see OrderFilter
  * @see SearchFilter
@@ -151,18 +153,6 @@ class User implements
         return $this->id;
     }
 
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): self
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
     public function getPassword(): ?string
     {
         return $this->password;
@@ -209,6 +199,18 @@ class User implements
         return $this->getEmail();
     }
 
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
     public function eraseCredentials()
     {
         // TODO: Implement eraseCredentials() method.
@@ -249,16 +251,4 @@ class User implements
 
         return $this;
     }
-
-//    public function getApp(): ?App
-//    {
-//        return $this->app;
-//    }
-//
-//    public function setApp(?App $app): self
-//    {
-//        $this->app = $app;
-//
-//        return $this;
-//    }
 }
