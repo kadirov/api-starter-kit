@@ -32,7 +32,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      collectionOperations = {
  *          "get" = {
  *              "security" = "is_granted('ROLE_ADMIN')",
- *              "normalization_context" = { "groups" = {"users:read"}},
+ *              "normalization_context" = {"groups" = {"users:read"}},
  *          },
  *          "post" = {
  *              "controller" = UserCreateAction::class,
@@ -41,23 +41,27 @@ use Symfony\Component\Validator\Constraints as Assert;
  *              "controller" = UserAboutMeAction::class,
  *              "method" = "get",
  *              "path" = "/users/about_me",
+ *              "openapi_context" = {"summary" = "Shows info about the authenticated user"},
  *          },
  *          "auth" = {
  *              "controller" = UserAuthAction::class,
  *              "method" = "post",
  *              "path" = "/users/auth",
+ *              "openapi_context" = {"summary" = "Authorization"},
  *          },
  *          "authByRefreshToken" = {
  *              "controller" = UserAuthByRefreshTokenAction::class,
  *              "method" = "post",
  *              "path" = "/users/auth/refreshToken",
  *              "input" = RefreshTokenRequestDto::class,
+ *              "openapi_context" = {"summary" = "Authorization by refreshToken"},
  *          },
  *          "isUniqueEmail" = {
  *              "controller" = UserIsUniqueEmailAction::class,
  *              "method" = "post",
  *              "path" = "users/is_unique_email",
- *              "denormalization_context" = { "groups" = {"user:isUniqueEmail:write"}},
+ *              "denormalization_context" = {"groups" = {"user:isUniqueEmail:write"}},
+ *              "openapi_context" = {"summary" = "Checks email for uniqueness"},
  *          },
  *      },
  *      itemOperations = {
@@ -67,6 +71,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *              "denormalization_context" = { "groups" = {"user:changePassword:write"}},
  *              "method" = "put",
  *              "path" = "users/{id}/password",
+ *              "openapi_context" = {"summary" = "Chnages password"},
  *          },
  *          "delete" = {
  *              "security" = "object == user || is_granted('ROLE_ADMIN')",
