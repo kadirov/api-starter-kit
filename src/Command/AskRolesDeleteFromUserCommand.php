@@ -9,10 +9,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Security\Core\User\UserInterface;
 
-class AskAddUserToRoleCommand extends Command
+class AskRolesDeleteFromUserCommand extends Command
 {
-    protected static $defaultName = 'ask:add-user-to-role';
+    protected static $defaultName = 'ask:roles:delete-from-user';
     private UserRepository $userRepository;
     private UserManager $userManager;
 
@@ -28,7 +29,7 @@ class AskAddUserToRoleCommand extends Command
 
     protected function configure(): void
     {
-        $this->setDescription('Adds user to a role');
+        $this->setDescription('Deletes a role from the user');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -54,11 +55,27 @@ class AskAddUserToRoleCommand extends Command
 
         while (empty($role)) {
             $role = $questionHelper->ask($input, $output, $roleQuestion);
+
+            if (!$this->hasRole($user, $role)) {
+                $io->warning('The user have not a role: ' . $role);
+                return 0;
+            }
         }
 
-        $user->addRole($role);
+        $user->deleteRole($role);
         $this->userManager->save($user, true);
 
-        return Command::SUCCESS;
+        return 0;
+    }
+
+    private function hasRole(UserInterface $user, string $roleName): bool
+    {
+        foreach ($user->getRoles() as $role) {
+            if ($role === $roleName) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
