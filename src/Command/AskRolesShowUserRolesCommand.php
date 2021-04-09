@@ -2,7 +2,6 @@
 
 namespace App\Command;
 
-use App\Component\User\UserManager;
 use App\Repository\UserRepository;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -14,16 +13,13 @@ class AskRolesShowUserRolesCommand extends Command
 {
     protected static $defaultName = 'ask:roles:show-user-roles';
     private UserRepository $userRepository;
-    private UserManager $userManager;
 
     public function __construct(
         UserRepository $userRepository,
-        UserManager $userManager,
         string $name = null
     ) {
         parent::__construct($name);
         $this->userRepository = $userRepository;
-        $this->userManager = $userManager;
     }
 
     protected function configure(): void
@@ -51,6 +47,10 @@ class AskRolesShowUserRolesCommand extends Command
         }
 
         foreach ($user->getRoles() as $role) {
+            if ($role === 'ROLE_USER') {
+                continue;
+            }
+
             $io->text($role);
         }
 
