@@ -25,72 +25,82 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
+#[ApiResource(
+    collectionOperations: [
+        'get'                => [
+            'security'              => "is_granted('ROLE_ADMIN')",
+            'normalization_context' => ['groups' => ['users:read']],
+        ],
+        'post'               => [
+            'controller' => UserCreateAction::class,
+        ],
+        'aboutMe'            => [
+            'controller'      => UserAboutMeAction::class,
+            'method'          => 'get',
+            'path'            => 'users/about_me',
+            'openapi_context' => [
+                'summary'    => 'Shows info about the authenticated user',
+//                'parameters' => [
+//                    [
+//                        'in'       => 'query',
+//                        'name'     => 'test',
+//                        'type'     => 'string',
+//                        'required' => true,
+//                        'example'  => '{"id": 1, "hash": "e9151ae9de2d5a3cd1d16834431a0317"}',
+//                    ],
+//                ],
+            ],
+        ],
+        'auth'               => [
+            'controller'      => UserAuthAction::class,
+            'method'          => 'post',
+            'path'            => 'users/auth',
+            'openapi_context' => ['summary' => 'Authorization'],
+        ],
+        'authByRefreshToken' => [
+            'controller'      => UserAuthByRefreshTokenAction::class,
+            'method'          => 'post',
+            'path'            => 'users/auth/refreshToken',
+            'openapi_context' => ['summary' => 'Authorization by refreshToken'],
+            'input'           => RefreshTokenRequestDto::class,
+        ],
+        'isUniqueEmail'      => [
+            'controller'              => UserIsUniqueEmailAction::class,
+            'method'                  => 'post',
+            'path'                    => 'users/is_unique_email',
+            'openapi_context'         => ['summary' => 'Checks email for uniqueness'],
+            'denormalization_context' => ['groups' => ['user:isUniqueEmail:write']],
+        ],
+    ],
+    itemOperations: [
+        'changePassword' => [
+            'controller'              => UserChangePasswordAction::class,
+            'method'                  => 'put',
+            'path'                    => 'users/{id}/password',
+            'security'                => "object == user || is_granted('ROLE_ADMIN')",
+            'openapi_context'         => ['summary' => 'Changes password'],
+            'denormalization_context' => ['groups' => ['user:changePassword:write']],
+        ],
+        'delete'         => [
+            'controller' => DeleteAction::class,
+            'security'   => "object == user || is_granted('ROLE_ADMIN')",
+        ],
+        'get'            => [
+            'security' => "object == user || is_granted('ROLE_ADMIN')",
+        ],
+        'put'            => [
+            'security'                => "object == user || is_granted('ROLE_ADMIN')",
+            'denormalization_context' => ['groups' => ['user:put:write']],
+        ],
+    ],
+    denormalizationContext: ['groups' => ['user:write']],
+    normalizationContext: ['groups' => ['user:read', 'users:read']],
+)]
+#[ApiFilter(OrderFilter::class, properties: ['id', 'createdAt', 'updatedAt', 'email'])]
+#[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'email' => 'partial'])]
+#[UniqueEntity('email', message: 'This email is already used')]
+
 /**
- * @ApiResource(
- *      normalizationContext = {"groups" = {"user:read", "users:read"}},
- *      denormalizationContext = {"groups" = {"user:write"}},
- *      collectionOperations = {
- *          "get" = {
- *              "security" = "is_granted('ROLE_ADMIN')",
- *              "normalization_context" = {"groups" = {"users:read"}},
- *          },
- *          "post" = {
- *              "controller" = UserCreateAction::class,
- *          },
- *          "aboutMe" = {
- *              "controller" = UserAboutMeAction::class,
- *              "method" = "get",
- *              "path" = "/users/about_me",
- *              "openapi_context" = {"summary" = "Shows info about the authenticated user"},
- *          },
- *          "auth" = {
- *              "controller" = UserAuthAction::class,
- *              "method" = "post",
- *              "path" = "/users/auth",
- *              "openapi_context" = {"summary" = "Authorization"},
- *          },
- *          "authByRefreshToken" = {
- *              "controller" = UserAuthByRefreshTokenAction::class,
- *              "method" = "post",
- *              "path" = "/users/auth/refreshToken",
- *              "input" = RefreshTokenRequestDto::class,
- *              "openapi_context" = {"summary" = "Authorization by refreshToken"},
- *          },
- *          "isUniqueEmail" = {
- *              "controller" = UserIsUniqueEmailAction::class,
- *              "method" = "post",
- *              "path" = "users/is_unique_email",
- *              "denormalization_context" = {"groups" = {"user:isUniqueEmail:write"}},
- *              "openapi_context" = {"summary" = "Checks email for uniqueness"},
- *          },
- *      },
- *      itemOperations = {
- *          "changePassword" = {
- *              "security" = "object == user || is_granted('ROLE_ADMIN')",
- *              "controller" = UserChangePasswordAction::class,
- *              "denormalization_context" = { "groups" = {"user:changePassword:write"}},
- *              "method" = "put",
- *              "path" = "users/{id}/password",
- *              "openapi_context" = {"summary" = "Chnages password"},
- *          },
- *          "delete" = {
- *              "security" = "object == user || is_granted('ROLE_ADMIN')",
- *              "controller" = DeleteAction::class,
- *          },
- *          "get" = {
- *              "security" = "object == user || is_granted('ROLE_ADMIN')",
- *          },
- *          "put" = {
- *              "security" = "object == user || is_granted('ROLE_ADMIN')",
- *              "denormalization_context" = { "groups" = {"user:put:write"}},
- *          },
- *      },
- * )
- *
- * @ApiFilter(OrderFilter::class, properties={"id", "createdAt", "updatedAt", "email"})
- * @ApiFilter(SearchFilter::class, properties={"id": "exact", "email": "partial"})
- *
- * @UniqueEntity("email", message="This email is already used")
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @see OrderFilter
  * @see SearchFilter
@@ -113,39 +123,40 @@ class User implements
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"users:read"})
      */
+    #[Groups(['users:read'])]
     private $id;
 
     /**
-     * @Assert\Email()
      * @ORM\Column(type="string", length=255)
-     * @Groups({"users:read", "user:write", "user:put:write", "user:isUniqueEmail:write"})
      */
+    #[Assert\Email]
+    #[Groups(['users:read', 'user:write', 'user:put:write', 'user:isUniqueEmail:write'])]
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"user:write", "user:changePassword:write"})
      */
+    #[Groups(['user:write', 'user:changePassword:write'])]
     private $password;
 
     /**
      * @ORM\Column(type="array")
-     * @Groups({"user:read"})
      */
+    #[Groups(['user:read'])]
     private $roles = [];
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"user:read"})
      */
+    #[Groups(['user:read'])]
     private $createdAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      * @Groups({"user:read"})
      */
+    #[Groups(['user:read'])]
     private $updatedAt;
 
     /**
