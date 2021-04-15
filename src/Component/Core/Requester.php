@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Component\Core;
@@ -109,11 +110,6 @@ class Requester
     private function getLogger(): LoggerInterface
     {
         return $this->logger;
-    }
-
-    private function getKernel(): KernelInterface
-    {
-        return $this->kernel;
     }
 
     private function getHttpClient(): HttpClientInterface
