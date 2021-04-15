@@ -24,13 +24,8 @@ Go to the project directory<br>
 Run docker containers <br>
 ```docker-compose up -d```
 
-Enter to php container <br>
-```docker-compose exec php bash```
-
 To install project run command:<br>
-```bin/console ask:install```
-
-Type ```exit``` for exiting php container or press ```CTRL + D```
+```docker-compose exec php bin/console ask:install```
 
 **Done! You can open <a href="http://localhost:8507/api" target="_blank">http://localhost:8507/api</a> via browser. 
 By the way, you can change this port by changing ```DOCKER_NGINX_PORT``` variable in [.env](.env) file.** 
