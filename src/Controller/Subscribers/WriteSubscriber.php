@@ -6,7 +6,6 @@ namespace App\Controller\Subscribers;
 
 use ApiPlatform\Core\EventListener\EventPriorities;
 use App\Controller\Base\AbstractController;
-use App\Entity\Interfaces\AppIdSettableInterface;
 use App\Entity\Interfaces\CreatedAtSettableInterface;
 use App\Entity\Interfaces\UpdatedAtSettableInterface;
 use App\Entity\Interfaces\UserIdSettableInterface;
