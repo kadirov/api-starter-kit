@@ -46,3 +46,7 @@ services:
         ports:
             - 127.0.0.1:${DOCKER_DATABASE_PORT}:3306
 
+#    redis:
+#        image: redis:6.0.10-alpine
+#        restart: unless-stopped
+#        container_name: ${DOCKER_PROJECT_NAME}_redis
