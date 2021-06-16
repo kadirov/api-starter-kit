@@ -97,7 +97,11 @@ class ReadExtension extends AbstractController implements QueryCollectionExtensi
     private function addUser(QueryBuilder $queryBuilder, string $tableName): void
     {
         $queryBuilder->andWhere("{$tableName}.user = :user");
-        $queryBuilder->setParameter('user', $this->getUser()/** or $this->getJwtUser() if you use microservices */);
+        $queryBuilder->setParameter('user', $this->getUser());
+
+        // or if you use microservices
+        // $queryBuilder->andWhere("{$tableName}.userId = :userId");
+        // $queryBuilder->setParameter('userId', $this->getJwtUser()->getId());
     }
 
     private function hideDeleted(QueryBuilder $queryBuilder, string $tableName): void
