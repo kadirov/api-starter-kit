@@ -11,7 +11,6 @@ services:
             - ./docker/php/php.ini:/usr/local/etc/php/php.ini
             # if you use supervisor
             #- ./docker/php/supervisor/messenger-worker.conf:/etc/supervisor/conf.d/messenger-worker.conf
-            #- ./docker/php/bash_history:/root/.bash_history
         build: ./docker/php
         depends_on:
             - mysql

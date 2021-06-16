@@ -205,12 +205,26 @@ class User implements
         return $this;
     }
 
-    public function getSalt()
+    public function deleteRole(string $role): self
     {
-        // TODO: Implement getSalt() method.
+        $roles = $this->roles;
+
+        foreach ($roles as $roleKey => $roleName) {
+            if ($roleName === $role) {
+                unset($roles[$roleKey]);
+                $this->setRoles($roles);
+            }
+        }
+
+        return $this;
     }
 
-    public function getUsername()
+    public function getSalt(): string
+    {
+        return '';
+    }
+
+    public function getUsername(): string
     {
         return $this->getEmail();
     }
