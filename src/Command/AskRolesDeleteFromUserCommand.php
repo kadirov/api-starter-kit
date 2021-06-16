@@ -65,7 +65,7 @@ class AskRolesDeleteFromUserCommand extends Command
         $user->deleteRole($role);
         $this->userManager->save($user, true);
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     private function hasRole(UserInterface $user, string $roleName): bool

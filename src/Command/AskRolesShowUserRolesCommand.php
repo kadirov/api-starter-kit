@@ -54,6 +54,6 @@ class AskRolesShowUserRolesCommand extends Command
             $io->text($role);
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

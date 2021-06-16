@@ -58,7 +58,7 @@ class AskInstallCommand extends Command implements GetOutputInterface
 
         $this->symfonyIO->success('Successfully installed');
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     private function waitConnection(): void
@@ -72,7 +72,7 @@ class AskInstallCommand extends Command implements GetOutputInterface
                 if ($this->entityManager->getConnection()->isConnected()) {
                     return;
                 }
-            } catch (Throwable $exception) {
+            } catch (Throwable) {
                 sleep(5);
             }
         }

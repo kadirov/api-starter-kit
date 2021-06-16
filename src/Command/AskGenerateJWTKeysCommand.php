@@ -47,7 +47,7 @@ class AskGenerateJWTKeysCommand extends Command implements GetOutputInterface
         $this->createJwtFolder();
         $this->createPassphrase();
         $this->allowAccessToPrivateKey();
-        return 0;
+        return Command::SUCCESS;
     }
 
     private function createJwtFolder(): void

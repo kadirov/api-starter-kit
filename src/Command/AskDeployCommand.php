@@ -46,7 +46,7 @@ class AskDeployCommand extends Command implements GetOutputInterface
         $this->runMigrations();
         $this->clearCache();
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     private function composerInstall(): void

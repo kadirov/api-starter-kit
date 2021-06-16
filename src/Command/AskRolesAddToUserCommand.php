@@ -59,6 +59,6 @@ class AskRolesAddToUserCommand extends Command
         $user->addRole($role);
         $this->userManager->save($user, true);
 
-        return 0;
+        return Command::SUCCESS;
     }
 }
