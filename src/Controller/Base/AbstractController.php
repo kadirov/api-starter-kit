@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Controller\Base;
 
@@ -17,8 +19,8 @@ use Symfony\Component\Serializer\SerializerInterface;
 class AbstractController
 {
     private SerializerInterface $serializer;
-    private ValidatorInterface $validator;
-    private CurrentUser $currentUser;
+    private ValidatorInterface  $validator;
+    private CurrentUser         $currentUser;
 
     public function __construct(
         SerializerInterface $serializer,
@@ -40,7 +42,7 @@ class AbstractController
 
     /**
      * @param object $data
-     * @param array  $context
+     * @param array $context
      * @throws ValidationException
      */
     protected function validate(object $data, array $context = []): void
@@ -56,15 +58,13 @@ class AbstractController
         return $this->serializer;
     }
 
-    /**
-     * @param mixed $content
-     * @param int   $status
-     * @return Response
-     */
-    protected function response($content, int $status = Response::HTTP_OK): Response
-    {
+    protected function response(
+        mixed $content,
+        int $status = Response::HTTP_OK,
+        string $format = ResponseFormat::JSONLD
+    ): Response {
         return (new Response(
-            $this->getSerializer()->serialize($content, ResponseFormat::JSONLD), $status
+            $this->getSerializer()->serialize($content, $format), $status
         ));
     }
 
@@ -78,8 +78,8 @@ class AbstractController
     }
 
     /**
-     * @param mixed  $content
-     * @param int    $status
+     * @param mixed $content
+     * @param int $status
      * @param string $format
      * @return Response
      */
@@ -94,8 +94,8 @@ class AbstractController
 
     /**
      * @param Request $request
-     * @param string  $dtoClass
-     * @param string  $format
+     * @param string $dtoClass
+     * @param string $format
      * @return object
      */
     protected function getDtoFromRequest(
@@ -120,7 +120,7 @@ class AbstractController
         return $this->currentUser->getJwtUser();
     }
 
-    protected function getEntityOrError(ServiceEntityRepository $repository, int $id): object
+    protected function findEntityOrError(ServiceEntityRepository $repository, int $id): object
     {
         $user = $repository->find($id);
 

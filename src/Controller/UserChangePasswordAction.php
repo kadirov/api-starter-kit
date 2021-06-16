@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class CreateUserController
  *
- * @method User getEntityOrError(ServiceEntityRepository $repository, int $id)
+ * @method User findEntityOrError(ServiceEntityRepository $repository, int $id)
  * @method UserPasswordDto getDtoFromRequest(Request $request, string $dtoClass)
  *
  * @package App\Controller
@@ -28,7 +28,7 @@ class UserChangePasswordAction extends AbstractController
         UserRepository $repository,
         int $id
     ): User {
-        $user = $this->getEntityOrError($repository, $id);
+        $user = $this->findEntityOrError($repository, $id);
         $userDto = $this->getDtoFromRequest($request, UserPasswordDto::class);
 
         $this->validate($userDto);
