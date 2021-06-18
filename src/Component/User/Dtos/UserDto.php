@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace App\Component\User\Dtos;
 
@@ -22,11 +23,10 @@ class UserDto
      */
     private string $password;
 
-    public function __construct(string $email, string $password /*, App $app */)
+    public function __construct(string $email, string $password)
     {
         $this->email = $email;
         $this->password = $password;
-//        $this->app = $app;
     }
 
     public function getEmail(): string
@@ -38,9 +38,4 @@ class UserDto
     {
         return $this->password;
     }
-
-//    public function getApp(): App
-//    {
-//        return $this->app;
-//    }
 }

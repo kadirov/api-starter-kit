@@ -300,6 +300,9 @@
     "symfony/polyfill-php80": {
         "version": "v1.18.1"
     },
+    "symfony/polyfill-php81": {
+        "version": "v1.23.0"
+    },
     "symfony/property-access": {
         "version": "v5.1.4"
     },
