@@ -114,8 +114,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class User implements
     UserInterface,
-    UpdatedAtSettableInterface,
     CreatedAtSettableInterface,
+    UpdatedAtSettableInterface,
     IsDeletedSettableInterface
 {
     /**
