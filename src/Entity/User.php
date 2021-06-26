@@ -73,6 +73,17 @@ use Symfony\Component\Validator\Constraints as Assert;
         ],
     ],
     itemOperations: [
+        'get'            => [
+            'security' => "object == user || is_granted('ROLE_ADMIN')",
+        ],
+        'put'            => [
+            'security'                => "object == user || is_granted('ROLE_ADMIN')",
+            'denormalization_context' => ['groups' => ['user:put:write']],
+        ],
+        'delete'         => [
+            'controller' => DeleteAction::class,
+            'security'   => "object == user || is_granted('ROLE_ADMIN')",
+        ],
         'changePassword' => [
             'controller'              => UserChangePasswordAction::class,
             'method'                  => 'put',
@@ -81,17 +92,6 @@ use Symfony\Component\Validator\Constraints as Assert;
             'openapi_context'         => ['summary' => 'Changes password'],
             'denormalization_context' => ['groups' => ['user:changePassword:write']],
         ],
-        'delete'         => [
-            'controller' => DeleteAction::class,
-            'security'   => "object == user || is_granted('ROLE_ADMIN')",
-        ],
-        'get'            => [
-            'security' => "object == user || is_granted('ROLE_ADMIN')",
-        ],
-        'put'            => [
-            'security'                => "object == user || is_granted('ROLE_ADMIN')",
-            'denormalization_context' => ['groups' => ['user:put:write']],
-        ],
     ],
     denormalizationContext: ['groups' => ['user:write']],
     normalizationContext: ['groups' => ['user:read', 'users:read']],
@@ -99,7 +99,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiFilter(OrderFilter::class, properties: ['id', 'createdAt', 'updatedAt', 'email'])]
 #[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'email' => 'partial'])]
 #[UniqueEntity('email', message: 'This email is already used')]
-
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @see OrderFilter
