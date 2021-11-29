@@ -1,5 +1,8 @@
 # Api Starter Kit
 
+[//]: <> ( todo udpate image and add new docker commands, tell about interfaces )
+
+
 Starter kit for API with 
 [Symfony](https://symfony.com/), 
 [Doctrine](https://www.doctrine-project.org/), 
