@@ -13,12 +13,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 class RefreshTokenRequestDto
 {
-    #[Groups(['user:write'])]
-    private string $refreshToken;
-
-    public function __construct(string $refreshToken)
-    {
-        $this->refreshToken = $refreshToken;
+    public function __construct(
+        #[Groups(['user:write'])]
+        private string $refreshToken
+    ) {
     }
 
     public function getRefreshToken(): string
