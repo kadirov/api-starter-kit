@@ -15,7 +15,7 @@ use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTEncodeFailureException;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /**
  * Class UserAuthAction
@@ -25,20 +25,10 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
  */
 class UserAuthAction extends AbstractController
 {
-    /**
-     * @param Request                      $request
-     * @param UserRepository               $userRepository
-     * @param UserPasswordEncoderInterface $passwordEncoder
-     * @param JWTTokenManagerInterface     $tokenManager
-     * @param JWTEncoderInterface          $tokenEncoder
-     * @param TokensCreator                $tokensCreator
-     * @return Response
-     * @throws JWTEncodeFailureException
-     */
     public function __invoke(
         Request $request,
         UserRepository $userRepository,
-        UserPasswordEncoderInterface $passwordEncoder,
+        UserPasswordHasherInterface $passwordEncoder,
         JWTTokenManagerInterface $tokenManager,
         JWTEncoderInterface $tokenEncoder,
         TokensCreator $tokensCreator

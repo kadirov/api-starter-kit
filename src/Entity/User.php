@@ -21,6 +21,7 @@ use App\Repository\UserRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -116,7 +117,8 @@ class User implements
     UserInterface,
     CreatedAtSettableInterface,
     UpdatedAtSettableInterface,
-    IsDeletedSettableInterface
+    IsDeletedSettableInterface,
+    PasswordAuthenticatedUserInterface
 {
     /**
      * @ORM\Id
@@ -180,7 +182,7 @@ class User implements
         return $this;
     }
 
-    public function getRoles(): ?array
+    public function getRoles(): array
     {
         $roles = $this->roles;
         $roles[] = 'ROLE_USER';
@@ -279,5 +281,10 @@ class User implements
         $this->isDeleted = $isDeleted;
 
         return $this;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return (string)$this->getId();
     }
 }

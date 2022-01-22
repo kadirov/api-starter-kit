@@ -1,7 +1,10 @@
 security:
-    encoders:
-        App\Entity\User:
-            algorithm: argon2i
+    # https://symfony.com/doc/current/security.html#c-hashing-passwords
+    password_hashers:
+        App\Entity\User: argon2i
+
+    # https://symfony.com/doc/current/security/authenticator_manager.html
+    enable_authenticator_manager: true
 
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
@@ -55,14 +58,16 @@ security:
             methods:
                 - post
 
+        doc:
+            pattern: ^/api/?$
+            security: false
+            methods:
+                - get
+
         main:
             stateless: true
-            anonymous: true
             provider: entity_provider
             # provider: jwt # if you use microservices
-            guard:
-                authenticators:
-                    - lexik_jwt_authentication.jwt_token_authenticator
 
     access_control:
         - { path: ^/api/.+, roles: IS_AUTHENTICATED_FULLY }

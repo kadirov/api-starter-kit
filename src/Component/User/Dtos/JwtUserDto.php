@@ -59,4 +59,9 @@ class JwtUserDto implements JWTUserInterface
     {
         return $this->id;
     }
+
+    public function getUserIdentifier(): string
+    {
+        return (string)$this->getId();
+    }
 }
