@@ -1,4 +1,5 @@
 {
+    "name": "kadirov/api-starter-kit",
     "type": "project",
     "license": "proprietary",
     "minimum-stability": "stable",
