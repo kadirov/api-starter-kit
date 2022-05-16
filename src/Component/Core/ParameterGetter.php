@@ -4,20 +4,17 @@ declare(strict_types=1);
 
 namespace App\Component\Core;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Psr\Container\ContainerInterface;
 
 class ParameterGetter
 {
-    private ContainerInterface $container;
-
-    public function __construct(ContainerInterface $container)
+    public function __construct(private ContainerInterface $parameterBag)
     {
-        $this->container = $container;
     }
 
     public function get(string $name): mixed
     {
-        return $this->container->getParameter($name);
+        return $this->parameterBag->getParameter($name);
     }
 
     public function getString(string $name): string
