@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+    php:
+        container_name: ${DOCKER_PROJECT_NAME}_php
+        restart: unless-stopped
+        links:
+            - mysql
+        volumes:
+            - ./:/var/www/html
+            - ./docker/php/php.ini:/usr/local/etc/php/php.ini
+            # if you use supervisor
+            #- ./docker/php/supervisor/messenger-worker.conf:/etc/supervisor/conf.d/messenger-worker.conf
+        build: ./docker/php
+        depends_on:
+            - mysql
+
+    nginx:
+        container_name: ${DOCKER_PROJECT_NAME}_nginx
+        image: nginx:1.19
+        restart: unless-stopped
+        environment:
+            - NGINX_HOST=${DOCKER_PROJECT_NAME}_php
+        volumes:
+            - ./docker/nginx/logs:/var/log/nginx
+            - ./:/var/www/html
+            - ./docker/nginx/templates:/etc/nginx/templates
+        depends_on:
+            - mysql
+        links:
+            - php
+        ports:
+            - 127.0.0.1:${DOCKER_NGINX_PORT}:80
+
+    mysql:
+        image: mariadb:10.5.2
+        container_name: ${DOCKER_PROJECT_NAME}_mysql
+        restart: unless-stopped
+        environment:
+            - MYSQL_ROOT_PASSWORD=${DATABASE_PASSWORD}
+            - MYSQL_DATABASE=${DOCKER_PROJECT_NAME}
+        volumes:
+            # - ./sql:/sql
+            - ./docker/mysql/db:/var/lib/mysql
+        ports:
+            - 127.0.0.1:${DOCKER_DATABASE_PORT}:3306
+
+#    redis:
+#        image: redis:6.0.10-alpine
+#        restart: unless-stopped
+#        container_name: ${DOCKER_PROJECT_NAME}_redis
