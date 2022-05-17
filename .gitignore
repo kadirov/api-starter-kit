@@ -4,7 +4,7 @@
 # docker
 /docker/mysql/db
 /docker/nginx/logs
-/docker/php/bash_historydocker-compose.yml
+/docker/php/bash_history
 
 ###> symfony/framework-bundle ###
 /.env.local
