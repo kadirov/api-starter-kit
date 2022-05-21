@@ -1,7 +1,7 @@
 security:
     # https://symfony.com/doc/current/security.html#c-hashing-passwords
     password_hashers:
-        App\Entity\User: argon2i
+        App\Entity\User: auto
 
     # https://symfony.com/doc/current/security/authenticator_manager.html
     enable_authenticator_manager: true

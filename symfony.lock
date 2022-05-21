@@ -23,7 +23,7 @@
         }
     },
     "doctrine/cache": {
-        "version": "2.1.1"
+        "version": "2.2.0"
     },
     "doctrine/collections": {
         "version": "1.6.8"
@@ -255,7 +255,7 @@
         "version": "v6.0.8"
     },
     "symfony/maker-bundle": {
-        "version": "1.42",
+        "version": "1.43",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
@@ -383,7 +383,7 @@
         "version": "v6.0.3"
     },
     "twig/twig": {
-        "version": "v3.4.0"
+        "version": "v3.4.1"
     },
     "webmozart/assert": {
         "version": "1.10.0"
