@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Component\User;
 
@@ -37,6 +39,11 @@ class CurrentUser
         }
 
         return $user;
+    }
+
+    public function isAuthed(): bool
+    {
+        return $this->tokenStorage->getToken() !== null;
     }
 
     private function getToken(): TokenInterface

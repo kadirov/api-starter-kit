@@ -9,6 +9,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class AuthenticationTokenDto
  *
  * @package App\Component\User\Dtos
+ * @deprecated
+ * @todo
  */
 class UserDto
 {
