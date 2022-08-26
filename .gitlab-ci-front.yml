@@ -3,7 +3,7 @@
 # https://docs.gitlab.com/ee/development/cicd/templates.html
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
-
+#
 # This is a sample GitLab CI/CD configuration file that should run without any modifications.
 # It demonstrates a basic 3 stage CI/CD pipeline. Instead of real tests or scripts,
 # it uses echo commands to simulate the pipeline execution.
@@ -30,12 +30,10 @@
 #        - echo "$DEPLOY_PRIVATE_SSH_KEY_DEV" | tr -d '\r' | ssh-add -
 #        - echo "Deploying the DEV project..."
 #        - ssh -tt -o StrictHostKeyChecking=no -p ${DEPLOY_PORT_DEV:-22} ${DEPLOY_HOST_DEV} \
-#            "cd ${DEPLOY_PATH_DEV:-/root/sites/${PROJECT_NAME}-dev/} &&
+#            "cd ${DEPLOY_PATH_DEV:-/root/sites/static/${PROJECT_NAME}-front-dev/} &&
 #            git reset --hard &&
-#            git pull origin dev &&
-#            docker-compose --env-file=.env.local up -d &&
-#            docker-compose exec php composer install &&
-#            docker-compose exec php bin/console ask:deploy"
+#            git pull &&
+#            docker-compose --env-file=.env.local up"
 #
 #deploy-prod-job:
 #    stage: deploy
@@ -45,9 +43,7 @@
 #        - echo "${DEPLOY_PRIVATE_SSH_KEY_PROD:-$DEPLOY_PRIVATE_SSH_KEY_DEV}" | tr -d '\r' | ssh-add -
 #        - echo "Deploying the PROD project..."
 #        - ssh -tt -o StrictHostKeyChecking=no -p ${DEPLOY_PORT_PROD:-${DEPLOY_PORT_DEV:-22}} ${DEPLOY_HOST_PROD:-$DEPLOY_HOST_DEV} \
-#            "cd ${DEPLOY_PATH_PROD:-/root/sites/${PROJECT_NAME}/} &&
+#            "cd ${DEPLOY_PATH_PROD:-/root/sites/static/${PROJECT_NAME}-front/} &&
 #            git reset --hard &&
-#            git pull origin master &&
-#            docker-compose up -d &&
-#            docker-compose exec php composer install &&
-#            docker-compose exec php bin/console ask:deploy"
+#            git pull &&
+#            docker-compose up"

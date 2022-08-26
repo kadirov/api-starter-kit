@@ -27,6 +27,9 @@ Go to the project directory<br>
 Run docker containers <br>
 ```docker-compose up -d```
 
+Install composer scripts:<br>
+```docker-compose exec php composer install```
+
 To install project run command:<br>
 ```docker-compose exec php bin/console ask:install```
 
