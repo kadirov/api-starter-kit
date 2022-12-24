@@ -11,7 +11,7 @@ class TokensDto
 
     public function __construct(string $accessToken, string $refreshToken)
     {
-        $this->accessToken = $accessToken;
+        $this->accessToken = 'bearer ' . $accessToken;
         $this->refreshToken = $refreshToken;
     }
 
