@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Subscribers;
 
-use ApiPlatform\Core\EventListener\EventPriorities;
+use ApiPlatform\Symfony\EventListener\EventPriorities;
 use App\Controller\Base\AbstractController;
 use App\Entity\Interfaces\CreatedAtSettableInterface;
 use App\Entity\Interfaces\UpdatedAtSettableInterface;
@@ -27,6 +27,10 @@ class WriteSubscriber extends AbstractController implements EventSubscriberInter
 
     public function insertSubscriber(ViewEvent $event): void
     {
+        if ($this->isIgnoredUrl($event)) {
+            return;
+        }
+
         $model = $event->getControllerResult();
 
         switch ($event->getRequest()->getMethod()) {
@@ -40,7 +44,7 @@ class WriteSubscriber extends AbstractController implements EventSubscriberInter
         }
     }
 
-    private function persist(object $model): void
+    private function persist(mixed $model): void
     {
         if ($model instanceof UserSettableInterface) {
             $model->setUser($this->getUser());
@@ -59,6 +63,18 @@ class WriteSubscriber extends AbstractController implements EventSubscriberInter
     {
         if ($model instanceof UpdatedAtSettableInterface) {
             $model->setUpdatedAt(new DateTime());
+        }
+    }
+
+    private function isIgnoredUrl(ViewEvent $event): bool
+    {
+        switch ($event->getRequest()->getRequestUri()) {
+            case '/api/some_ignored_url':
+            case '/api/another_ignored_url':
+                return true;
+
+            default:
+                return false;
         }
     }
 }

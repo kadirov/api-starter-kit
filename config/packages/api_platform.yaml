@@ -9,11 +9,6 @@ api_platform:
     patch_formats:
         json: ['application/merge-patch+json']
 
-    collection:
-        pagination:
-            client_enabled: true
-            items_per_page: 10
-
     swagger:
         versions: [3]
         api_keys:
