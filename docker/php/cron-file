@@ -4,3 +4,4 @@
 # 5  4  3  *  1  At 04:05, on third day of month, on Monday
 # i  H  d  m  w  user command
 # *  *  *  *  *  root /usr/local/bin/php /var/www/html/bin/console some:symfony:command
+# *  *  *  *  *  root cd /var/www/html/ && docker-compose exec mysql mysqldump -ppass4ask06 ask2 > /root/sites/ask2-$(date +\%Y-\%m-\%d_\%H-\%M\-%S).sql
