@@ -15,13 +15,8 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 class TokensCreator
 {
-    private JWTEncoderInterface $tokenEncoder;
-    private KernelInterface $kernel;
-
-    public function __construct(JWTEncoderInterface $tokenEncoder, KernelInterface $kernel)
+    public function __construct(private JWTEncoderInterface $tokenEncoder, private KernelInterface $kernel)
     {
-        $this->tokenEncoder = $tokenEncoder;
-        $this->kernel = $kernel;
     }
 
     /**
@@ -46,11 +41,11 @@ class TokensCreator
 
         return $this->tokenEncoder->encode(
             [
-                'iat'      => (new DateTime())->getTimestamp(),
-                'exp'      => (new DateTime())->add($expInterval)->getTimestamp(),
-                'id'       => $user->getId(),
+                'iat' => (new DateTime())->getTimestamp(),
+                'exp' => (new DateTime())->add($expInterval)->getTimestamp(),
+                'id' => $user->getId(),
                 'username' => $user->getEmail(),
-                'roles'    => $user->getRoles(),
+                'roles' => $user->getRoles(),
             ]
         );
     }
@@ -72,7 +67,7 @@ class TokensCreator
 
         return $this->tokenEncoder->encode(
             [
-                'id'  => $userId,
+                'id' => $userId,
                 'iat' => (new DateTime())->getTimestamp(),
                 'exp' => (new DateTime())->add($expInterval)->getTimestamp(),
             ]

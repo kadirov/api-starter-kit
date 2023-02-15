@@ -6,11 +6,14 @@ namespace App\Controller;
 
 use App\Controller\Base\AbstractController;
 use App\Entity\User;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserAboutMeAction extends AbstractController
 {
-    public function __invoke(): User
+    public function __invoke(): Response
     {
-        return $this->getUser();
+        return $this->responseNormalized(
+            $this->getUser()
+        );
     }
 }

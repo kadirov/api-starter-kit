@@ -12,7 +12,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 /**
  * Class UserManager
  *
- * @method save(User $entity, bool $needToFlush = false) : void
+ * @method save(User $entity, bool $needToFlush = false): void
  * @package App\Component\User
  */
 class UserManager extends AbstractManager

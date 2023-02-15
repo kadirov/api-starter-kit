@@ -7,20 +7,22 @@ namespace App\Command;
 use App\Command\Interfaces\GetOutputInterface;
 use App\Command\Traits\RunCommandTrait;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand(
+    name: 'ask:generate:jwtKeys',
+    description: 'Generate jwt keys. If keys are exist they are will be dropped',
+)]
 class AskGenerateJWTKeysCommand extends Command implements GetOutputInterface
 {
     use RunCommandTrait;
 
-    protected static $defaultName = 'ask:generate:jwtKeys';
-
     private OutputInterface $output;
     private SymfonyStyle $symfonyIO;
-    private EntityManagerInterface $entityManager;
 
     public function getOutput(): OutputInterface
     {
@@ -30,11 +32,6 @@ class AskGenerateJWTKeysCommand extends Command implements GetOutputInterface
     public function getSymfonyStyleOutput(): SymfonyStyle
     {
         return $this->symfonyIO;
-    }
-
-    protected function configure(): void
-    {
-        $this->setDescription("Generate jwt keys. If keys are exist they are will be dropped");
     }
 
     protected function execute(
@@ -47,6 +44,7 @@ class AskGenerateJWTKeysCommand extends Command implements GetOutputInterface
         $this->createJwtFolder();
         $this->createPassphrase();
         $this->allowAccessToPrivateKey();
+
         return Command::SUCCESS;
     }
 

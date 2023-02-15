@@ -1,43 +1,25 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Component\User;
 
-use App\Component\User\Dtos\UserDto;
-use App\Component\User\Exceptions\UserFactoryException;
 use App\Entity\User;
 use DateTime;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserFactory
 {
-    private UserManager $userManager;
-    private ValidatorInterface $validator;
-
-    public function __construct(UserManager $userManager, ValidatorInterface $validator)
+    public function __construct(private UserPasswordHasherInterface $passwordEncoder)
     {
-        $this->userManager = $userManager;
-        $this->validator = $validator;
     }
 
-    /**
-     * @param UserDto $userDto
-     * @return User
-     * @throws UserFactoryException
-     */
-    public function create(UserDto $userDto): User
+    public function create(string $email, string $password): User
     {
         $user = new User();
-
-        $user->setEmail($userDto->getEmail());
+        $user->setEmail($email);
         $user->setCreatedAt(new DateTime());
-
-        $this->userManager->hashPassword($user, $userDto->getPassword());
-
-        $errors = $this->validator->validate($user);
-
-        if (count($errors) > 0) {
-            throw new UserFactoryException((string)$errors);
-        }
+        $user->setPassword($this->passwordEncoder->hashPassword($user, $password));
 
         return $user;
     }

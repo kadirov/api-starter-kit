@@ -4,15 +4,17 @@ declare(strict_types=1);
 
 namespace App\Component\User\Dtos;
 
+use Symfony\Component\Serializer\Annotation\Groups;
+
 class TokensDto
 {
-    private string $accessToken;
-    private string $refreshToken;
+    public function __construct(
+        #[Groups(['users:read'])]
+        private string $accessToken,
 
-    public function __construct(string $accessToken, string $refreshToken)
-    {
-        $this->accessToken = $accessToken;
-        $this->refreshToken = $refreshToken;
+        #[Groups(['users:read'])]
+        private string $refreshToken
+    ) {
     }
 
     public function getAccessToken(): string

@@ -12,11 +12,8 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class CurrentUser
 {
-    private TokenStorageInterface $tokenStorage;
-
-    public function __construct(TokenStorageInterface $tokenStorage)
+    public function __construct(private TokenStorageInterface $tokenStorage)
     {
-        $this->tokenStorage = $tokenStorage;
     }
 
     public function getUser(): User

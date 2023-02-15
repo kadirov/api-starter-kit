@@ -8,31 +8,30 @@
         "php": "8.2.*",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "api-platform/core": "*",
-        "doctrine/annotations": "*",
-        "doctrine/doctrine-bundle": "*",
-        "doctrine/doctrine-migrations-bundle": "*",
-        "doctrine/orm": "*",
-        "lexik/jwt-authentication-bundle": "*",
-        "nelmio/cors-bundle": "*",
-        "phpdocumentor/reflection-docblock": "*",
-        "phpstan/phpdoc-parser": "*",
-        "symfony/asset": "*",
-        "symfony/console": "*",
-        "symfony/dotenv": "*",
-        "symfony/expression-language": "*",
-        "symfony/flex": "*",
-        "symfony/framework-bundle": "*",
-        "symfony/property-access": "*",
-        "symfony/property-info": "*",
-        "symfony/proxy-manager-bridge": "*",
-        "symfony/runtime": "*",
-        "symfony/security-bundle": "*",
-        "symfony/serializer": "*",
-        "symfony/twig-bundle": "*",
-        "symfony/validator": "*",
-        "symfony/yaml": "*",
-        "": ""
+        "api-platform/core": "3.1.*",
+        "doctrine/annotations": "2.0.*",
+        "doctrine/doctrine-bundle": "2.8.*",
+        "doctrine/doctrine-migrations-bundle": "3.2.*",
+        "doctrine/orm": "2.14.*",
+        "lexik/jwt-authentication-bundle": "2.18.*",
+        "nelmio/cors-bundle": "2.2.*",
+        "phpdocumentor/reflection-docblock": "5.3.*",
+        "phpstan/phpdoc-parser": "1.16.*",
+        "symfony/asset": "6.2.*",
+        "symfony/console": "6.2.*",
+        "symfony/dotenv": "6.2.*",
+        "symfony/expression-language": "6.2.*",
+        "symfony/flex": "2.2.*",
+        "symfony/framework-bundle": "6.2.*",
+        "symfony/property-access": "6.2.*",
+        "symfony/property-info": "6.2.*",
+        "symfony/proxy-manager-bridge": "6.2.*",
+        "symfony/runtime": "6.2.*",
+        "symfony/security-bundle": "6.2.*",
+        "symfony/serializer": "6.2.*",
+        "symfony/twig-bundle": "6.2.*",
+        "symfony/validator": "6.2.*",
+        "symfony/yaml": "6.2.*"
     },
     "config": {
         "allow-plugins": {
@@ -82,10 +81,10 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "*"
+            "require": "6.2.*"
         }
     },
     "require-dev": {
-        "symfony/maker-bundle": "*"
+        "symfony/maker-bundle": "1.48.*"
     }
 }

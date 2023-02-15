@@ -8,8 +8,8 @@ use ApiPlatform\Symfony\EventListener\EventPriorities;
 use App\Controller\Base\AbstractController;
 use App\Entity\Interfaces\CreatedAtSettableInterface;
 use App\Entity\Interfaces\UpdatedAtSettableInterface;
-use App\Entity\Interfaces\UserIdSettableInterface;
-use App\Entity\Interfaces\UserSettableInterface;
+use App\Entity\Interfaces\UpdatedBySettableInterface;
+use App\Entity\Interfaces\CreatedBySettableInterface;
 use DateTime;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,11 +21,11 @@ class WriteSubscriber extends AbstractController implements EventSubscriberInter
     public static function getSubscribedEvents(): array
     {
         return [
-            KernelEvents::VIEW => ['insertSubscriber', EventPriorities::PRE_WRITE],
+            KernelEvents::VIEW => ['onWrite', EventPriorities::PRE_WRITE],
         ];
     }
 
-    public function insertSubscriber(ViewEvent $event): void
+    public function onWrite(ViewEvent $event): void
     {
         if ($this->isIgnoredUrl($event)) {
             return;
@@ -44,14 +44,10 @@ class WriteSubscriber extends AbstractController implements EventSubscriberInter
         }
     }
 
-    private function persist(mixed $model): void
+    private function persist(object|array $model): void
     {
-        if ($model instanceof UserSettableInterface) {
-            $model->setUser($this->getUser());
-        }
-
-        if ($model instanceof UserIdSettableInterface) {
-            $model->setUserId($this->getJwtUser()->getId());
+        if ($model instanceof CreatedBySettableInterface) {
+            $model->setCreatedBy($this->getUser());
         }
 
         if ($model instanceof CreatedAtSettableInterface) {
@@ -59,8 +55,12 @@ class WriteSubscriber extends AbstractController implements EventSubscriberInter
         }
     }
 
-    private function update(object $model): void
+    private function update(object|array $model): void
     {
+        if ($model instanceof UpdatedBySettableInterface) {
+            $model->setUpdatedBy($this->getUser());
+        }
+
         if ($model instanceof UpdatedAtSettableInterface) {
             $model->setUpdatedAt(new DateTime());
         }

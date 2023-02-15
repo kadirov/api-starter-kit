@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller\Base;
 
-use ApiPlatform\Core\Bridge\Symfony\Validator\Exception\ValidationException;
-use ApiPlatform\Core\Validator\ValidatorInterface;
+use ApiPlatform\Validator\Exception\ValidationException;
+use ApiPlatform\Validator\ValidatorInterface;
 use App\Component\User\CurrentUser;
 use App\Component\User\Dtos\JwtUserDto;
 use App\Controller\Base\Constants\ResponseFormat;
@@ -84,7 +84,7 @@ class AbstractController extends \Symfony\Bundle\FrameworkBundle\Controller\Abst
      * @return Response
      */
     protected function responseNormalized(
-        $content,
+        mixed $content,
         int $status = Response::HTTP_OK,
         string $format = ResponseFormat::JSONLD
     ): Response {

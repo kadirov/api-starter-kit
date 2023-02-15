@@ -23,17 +23,15 @@ use Symfony\Component\HttpFoundation\Request;
 class UserChangePasswordAction extends AbstractController
 {
     public function __invoke(
-        Request $request,
+        User $data,
         UserManager $userManager,
         UserRepository $repository,
         int $id
     ): User {
         $user = $this->findEntityOrError($repository, $id);
-        $userDto = $this->getDtoFromRequest($request, UserPasswordDto::class);
+        $this->validate($data);
 
-        $this->validate($userDto);
-
-        $userManager->hashPassword($user, $userDto->getPassword());
+        $userManager->hashPassword($user, $data->getPassword());
         $userManager->save($user, true);
 
         return $user;

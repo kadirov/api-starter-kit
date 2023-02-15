@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Controller\Subscribers;
@@ -8,7 +9,7 @@ use ApiPlatform\Doctrine\Orm\Extension\QueryItemExtensionInterface;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use ApiPlatform\Metadata\Operation;
 use App\Controller\Base\AbstractController;
-use App\Entity\Interfaces\IsDeletedSettableInterface;
+use App\Entity\Interfaces\DeletedAtSettableInterface;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -49,7 +50,7 @@ class ReadExtension extends AbstractController implements QueryCollectionExtensi
 
     /**
      * In this method you can join user table for all queries. So that users can see only their entities.
-     * Also you should hide elements that marked as deleted.
+     * Also, you should hide elements that marked as deleted.
      *
      * @param QueryBuilder $queryBuilder
      * @param string $resourceClass
@@ -59,7 +60,7 @@ class ReadExtension extends AbstractController implements QueryCollectionExtensi
         $rootTable = $queryBuilder->getRootAliases()[0];
         $this->resourceClassInterfaces = class_implements($resourceClass);
 
-        if ($this->hasResourceClassInterfaceOf(IsDeletedSettableInterface::class)) {
+        if ($this->hasResourceClassInterfaceOf(DeletedAtSettableInterface::class)) {
             $this->hideDeleted($queryBuilder, $rootTable);
         }
 
@@ -86,7 +87,7 @@ class ReadExtension extends AbstractController implements QueryCollectionExtensi
 
     private function addUser(QueryBuilder $queryBuilder, string $tableName): void
     {
-        $queryBuilder->andWhere("{$tableName}.user = :user");
+        $queryBuilder->andWhere("{$tableName}.createdBy = :user");
         $queryBuilder->setParameter('user', $this->getUser());
 
         // or if you use microservices
@@ -96,7 +97,7 @@ class ReadExtension extends AbstractController implements QueryCollectionExtensi
 
     private function hideDeleted(QueryBuilder $queryBuilder, string $tableName): void
     {
-        $queryBuilder->andWhere("{$tableName}.isDeleted = false");
+        $queryBuilder->andWhere("{$tableName}.deletedAt is null");
     }
 
     private function hasResourceClassInterfaceOf(string $interfaceName): bool

@@ -4,6 +4,7 @@ namespace App\Command;
 
 use App\Component\User\UserManager;
 use App\Repository\UserRepository;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -11,25 +12,18 @@ use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+#[AsCommand(
+    name: 'ask:roles:delete-from-user',
+    description: 'Deletes a role from the user',
+)]
 class AskRolesDeleteFromUserCommand extends Command
 {
-    protected static $defaultName = 'ask:roles:delete-from-user';
-    private UserRepository $userRepository;
-    private UserManager $userManager;
-
     public function __construct(
-        UserRepository $userRepository,
-        UserManager $userManager,
+        private UserRepository $userRepository,
+        private UserManager $userManager,
         string $name = null
     ) {
         parent::__construct($name);
-        $this->userRepository = $userRepository;
-        $this->userManager = $userManager;
-    }
-
-    protected function configure(): void
-    {
-        $this->setDescription('Deletes a role from the user');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -70,12 +64,6 @@ class AskRolesDeleteFromUserCommand extends Command
 
     private function hasRole(UserInterface $user, string $roleName): bool
     {
-        foreach ($user->getRoles() as $role) {
-            if ($role === $roleName) {
-                return true;
-            }
-        }
-
-        return false;
+        return in_array($roleName, $user->getRoles(), true);
     }
 }

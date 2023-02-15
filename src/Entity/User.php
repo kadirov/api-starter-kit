@@ -2,11 +2,17 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Component\User\Dtos\RefreshTokenRequestDto;
+use App\Component\User\Dtos\TokensDto;
 use App\Controller\DeleteAction;
 use App\Controller\UserAboutMeAction;
 use App\Controller\UserAuthAction;
@@ -15,10 +21,11 @@ use App\Controller\UserChangePasswordAction;
 use App\Controller\UserCreateAction;
 use App\Controller\UserIsUniqueEmailAction;
 use App\Entity\Interfaces\CreatedAtSettableInterface;
-use App\Entity\Interfaces\IsDeletedSettableInterface;
+use App\Entity\Interfaces\DeletedAtSettableInterface;
 use App\Entity\Interfaces\UpdatedAtSettableInterface;
 use App\Repository\UserRepository;
 use DateTimeInterface;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -27,75 +34,65 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
-    collectionOperations: [
-        'get'                => [
-            'security'              => "is_granted('ROLE_ADMIN')",
-            'normalization_context' => ['groups' => ['users:read']],
-        ],
-        'post'               => [
-            'controller' => UserCreateAction::class,
-        ],
-        'aboutMe'            => [
-            'controller'      => UserAboutMeAction::class,
-            'method'          => 'get',
-            'path'            => 'users/about_me',
-            'openapi_context' => [
-                'summary'    => 'Shows info about the authenticated user',
-//                'parameters' => [
-//                    [
-//                        'in'       => 'query',
-//                        'name'     => 'test',
-//                        'type'     => 'string',
-//                        'required' => true,
-//                        'example'  => '{"id": 1, "hash": "e9151ae9de2d5a3cd1d16834431a0317"}',
-//                    ],
-//                ],
-            ],
-        ],
-        'auth'               => [
-            'controller'      => UserAuthAction::class,
-            'method'          => 'post',
-            'path'            => 'users/auth',
-            'openapi_context' => ['summary' => 'Authorization'],
-        ],
-        'authByRefreshToken' => [
-            'controller'      => UserAuthByRefreshTokenAction::class,
-            'method'          => 'post',
-            'path'            => 'users/auth/refreshToken',
-            'openapi_context' => ['summary' => 'Authorization by refreshToken'],
-            'input'           => RefreshTokenRequestDto::class,
-        ],
-        'isUniqueEmail'      => [
-            'controller'              => UserIsUniqueEmailAction::class,
-            'method'                  => 'post',
-            'path'                    => 'users/is_unique_email',
-            'openapi_context'         => ['summary' => 'Checks email for uniqueness'],
-            'denormalization_context' => ['groups' => ['user:isUniqueEmail:write']],
-        ],
+    operations: [
+        new GetCollection(
+            normalizationContext: ['groups' => ['users:read']],
+            security: "is_granted('ROLE_ADMIN')",
+        ),
+        new Get(
+            security: "object == user || is_granted('ROLE_ADMIN')",
+        ),
+        new Post(
+            controller: UserCreateAction::class,
+        ),
+        new Put(
+            denormalizationContext: ['groups' => ['user:put:write']],
+            security: "object == user || is_granted('ROLE_ADMIN')",
+        ),
+        new Delete(
+            controller: DeleteAction::class,
+            security: "object == user || is_granted('ROLE_ADMIN')",
+        ),
+        new Post(
+            uriTemplate: 'users/about_me',
+            controller: UserAboutMeAction::class,
+            openapiContext: ['summary' => 'Shows info about the authenticated user'],
+            denormalizationContext: ['groups' => ['user:empty:body']],
+            name: 'aboutMe',
+        ),
+        new Post(
+            uriTemplate: 'users/auth',
+            controller: UserAuthAction::class,
+            openapiContext: ['summary' => 'Shows info about the authenticated user'],
+            output: TokensDto::class,
+            name: 'auth',
+        ),
+        new Post(
+            uriTemplate: 'users/auth/refreshToken',
+            controller: UserAuthByRefreshTokenAction::class,
+            openapiContext: ['summary' => 'Authorization by refreshToken'],
+            input: RefreshTokenRequestDto::class,
+            output: TokensDto::class,
+            name: 'authByRefreshToken',
+        ),
+        new Post(
+            uriTemplate: 'users/is_unique_email',
+            controller: UserIsUniqueEmailAction::class,
+            openapiContext: ['summary' => 'Checks email for uniqueness'],
+            denormalizationContext: ['groups' => ['user:isUniqueEmail:write']],
+            name: 'isUniqueEmail',
+        ),
+        new Put(
+            uriTemplate: 'users/{id}/password',
+            controller: UserChangePasswordAction::class,
+            openapiContext: ['summary' => 'Changes password'],
+            denormalizationContext: ['groups' => ['user:changePassword:write']],
+            security: "object == user || is_granted('ROLE_ADMIN')",
+            name: 'changePassword',
+        ),
     ],
-    itemOperations: [
-        'get'            => [
-            'security' => "object == user || is_granted('ROLE_ADMIN')",
-        ],
-        'put'            => [
-            'security'                => "object == user || is_granted('ROLE_ADMIN')",
-            'denormalization_context' => ['groups' => ['user:put:write']],
-        ],
-        'delete'         => [
-            'controller' => DeleteAction::class,
-            'security'   => "object == user || is_granted('ROLE_ADMIN')",
-        ],
-        'changePassword' => [
-            'controller'              => UserChangePasswordAction::class,
-            'method'                  => 'put',
-            'path'                    => 'users/{id}/password',
-            'security'                => "object == user || is_granted('ROLE_ADMIN')",
-            'openapi_context'         => ['summary' => 'Changes password'],
-            'denormalization_context' => ['groups' => ['user:changePassword:write']],
-        ],
-    ],
-    denormalizationContext: ['groups' => ['user:write']],
     normalizationContext: ['groups' => ['user:read', 'users:read']],
+    denormalizationContext: ['groups' => ['user:write']],
 )]
 #[ApiFilter(OrderFilter::class, properties: ['id', 'createdAt', 'updatedAt', 'email'])]
 #[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'email' => 'partial'])]
@@ -105,38 +102,39 @@ class User implements
     UserInterface,
     CreatedAtSettableInterface,
     UpdatedAtSettableInterface,
-    IsDeletedSettableInterface,
+    DeletedAtSettableInterface,
     PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     #[Groups(['users:read'])]
-    private $id;
+    private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\Email]
     #[Groups(['users:read', 'user:write', 'user:put:write', 'user:isUniqueEmail:write'])]
-    private $email;
+    private ?string $email = null;
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Groups(['user:write', 'user:changePassword:write'])]
-    private $password;
+    #[Assert\Length(min: 6, minMessage: 'Password must be at least {{ limit }} characters long')]
+    private ?string $password = null;
 
     #[ORM\Column(type: 'array')]
     #[Groups(['user:read'])]
-    private $roles = [];
+    private array $roles = [];
 
     #[ORM\Column(type: 'datetime')]
     #[Groups(['user:read'])]
-    private $createdAt;
+    private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
     #[Groups(['user:read'])]
-    private $updatedAt;
+    private ?DateTimeInterface $updatedAt = null;
 
-    #[ORM\Column(type: 'boolean')]
-    private $isDeleted = false;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?DateTimeInterface $deletedAt = null;
 
     public function getId(): ?int
     {
@@ -168,6 +166,16 @@ class User implements
         $this->roles = $roles;
 
         return $this;
+    }
+
+    public function eraseCredentials()
+    {
+        // TODO: Implement eraseCredentials() method.
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return (string)$this->getId();
     }
 
     public function addRole(string $role): self
@@ -215,11 +223,6 @@ class User implements
         return $this;
     }
 
-    public function eraseCredentials()
-    {
-        // TODO: Implement eraseCredentials() method.
-    }
-
     public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
@@ -244,20 +247,15 @@ class User implements
         return $this;
     }
 
-    public function getIsDeleted(): ?bool
+    public function getDeletedAt(): ?DateTimeInterface
     {
-        return $this->isDeleted;
+        return $this->deletedAt;
     }
 
-    public function setIsDeleted(bool $isDeleted): self
+    public function setDeletedAt(?DateTimeInterface $deletedAt): self
     {
-        $this->isDeleted = $isDeleted;
+        $this->deletedAt = $deletedAt;
 
         return $this;
-    }
-
-    public function getUserIdentifier(): string
-    {
-        return (string)$this->getId();
     }
 }
