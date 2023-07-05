@@ -34,7 +34,7 @@
 #            git reset --hard &&
 #            git pull origin dev &&
 #            docker compose down &&
-#            docker compose --env-file=.env.local up -d &&
+#            docker compose --env-file=.env.local up -d --build &&
 #            docker compose exec php composer install &&
 #            docker compose exec php bin/console ask:deploy"
 #
@@ -50,6 +50,6 @@
 #            git reset --hard &&
 #            git pull origin master &&
 #            docker compose down &&
-#            docker compose up -d &&
+#            docker compose up -d --build &&
 #            docker compose exec php composer install &&
 #            docker compose exec php bin/console ask:deploy"
