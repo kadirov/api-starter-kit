@@ -35,9 +35,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
-    extraProperties: [
-        'standard_put' => true,
-    ],
     operations: [
         new GetCollection(
             normalizationContext: ['groups' => ['users:read']],
@@ -107,6 +104,9 @@ use Symfony\Component\Validator\Constraints as Assert;
     ],
     normalizationContext: ['groups' => ['user:read', 'users:read']],
     denormalizationContext: ['groups' => ['user:write']],
+    extraProperties: [
+        'standard_put' => true,
+    ],
 )]
 #[ApiFilter(OrderFilter::class, properties: ['id', 'createdAt', 'updatedAt', 'email'])]
 #[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'email' => 'partial'])]
