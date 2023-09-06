@@ -11,7 +11,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use ApiPlatform\OpenApi\Model;
+use ApiPlatform\OpenApi\Model\Operation;
 use App\Component\User\Dtos\RefreshTokenRequestDto;
 use App\Component\User\Dtos\TokensDto;
 use App\Controller\DeleteAction;
@@ -57,7 +57,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post(
             uriTemplate: 'users/about_me',
             controller: UserAboutMeAction::class,
-            openapi: new Model\Operation(
+            openapi: new Operation(
                 summary: 'Shows info about the authenticated user'
             ),
             denormalizationContext: ['groups' => ['user:empty:body']],
@@ -66,7 +66,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post(
             uriTemplate: 'users/auth',
             controller: UserAuthAction::class,
-            openapi: new Model\Operation(
+            openapi: new Operation(
                 summary: 'Authorization'
             ),
             output: TokensDto::class,
@@ -75,7 +75,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post(
             uriTemplate: 'users/auth/refreshToken',
             controller: UserAuthByRefreshTokenAction::class,
-            openapi: new Model\Operation(
+            openapi: new Operation(
                 summary: 'Authorization by refreshToken'
             ),
             input: RefreshTokenRequestDto::class,
@@ -85,7 +85,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post(
             uriTemplate: 'users/is_unique_email',
             controller: UserIsUniqueEmailAction::class,
-            openapi: new Model\Operation(
+            openapi: new Operation(
                 summary: 'Checks email for uniqueness'
             ),
             denormalizationContext: ['groups' => ['user:isUniqueEmail:write']],
@@ -94,7 +94,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Put(
             uriTemplate: 'users/{id}/password',
             controller: UserChangePasswordAction::class,
-            openapi: new Model\Operation(
+            openapi: new Operation(
                 summary: 'Changes password'
             ),
             denormalizationContext: ['groups' => ['user:changePassword:write']],
