@@ -6,5 +6,5 @@ use DateTimeInterface;
 
 interface CreatedAtSettableInterface
 {
-    public function setCreatedAt(DateTimeInterface $dateTime);
+    public function setCreatedAt(DateTimeInterface $createdAt);
 }
