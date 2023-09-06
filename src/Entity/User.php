@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\OpenApi\Model;
 use App\Component\User\Dtos\RefreshTokenRequestDto;
 use App\Component\User\Dtos\TokensDto;
 use App\Controller\DeleteAction;
@@ -34,6 +35,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
+    extraProperties: [
+        'standard_put' => true,
+    ],
     operations: [
         new GetCollection(
             normalizationContext: ['groups' => ['users:read']],
@@ -56,21 +60,27 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post(
             uriTemplate: 'users/about_me',
             controller: UserAboutMeAction::class,
-            openapiContext: ['summary' => 'Shows info about the authenticated user'],
+            openapi: new Model\Operation(
+                summary: 'Shows info about the authenticated user'
+            ),
             denormalizationContext: ['groups' => ['user:empty:body']],
             name: 'aboutMe',
         ),
         new Post(
             uriTemplate: 'users/auth',
             controller: UserAuthAction::class,
-            openapiContext: ['summary' => 'Shows info about the authenticated user'],
+            openapi: new Model\Operation(
+                summary: 'Authorization'
+            ),
             output: TokensDto::class,
             name: 'auth',
         ),
         new Post(
             uriTemplate: 'users/auth/refreshToken',
             controller: UserAuthByRefreshTokenAction::class,
-            openapiContext: ['summary' => 'Authorization by refreshToken'],
+            openapi: new Model\Operation(
+                summary: 'Authorization by refreshToken'
+            ),
             input: RefreshTokenRequestDto::class,
             output: TokensDto::class,
             name: 'authByRefreshToken',
@@ -78,14 +88,18 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post(
             uriTemplate: 'users/is_unique_email',
             controller: UserIsUniqueEmailAction::class,
-            openapiContext: ['summary' => 'Checks email for uniqueness'],
+            openapi: new Model\Operation(
+                summary: 'Checks email for uniqueness'
+            ),
             denormalizationContext: ['groups' => ['user:isUniqueEmail:write']],
             name: 'isUniqueEmail',
         ),
         new Put(
             uriTemplate: 'users/{id}/password',
             controller: UserChangePasswordAction::class,
-            openapiContext: ['summary' => 'Changes password'],
+            openapi: new Model\Operation(
+                summary: 'Changes password'
+            ),
             denormalizationContext: ['groups' => ['user:changePassword:write']],
             security: "object == user || is_granted('ROLE_ADMIN')",
             name: 'changePassword',
