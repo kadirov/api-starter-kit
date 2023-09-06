@@ -25,13 +25,13 @@ Go to the project directory<br>
 ```cd api-starter-kit```
 
 Run docker containers <br>
-```docker-compose up -d```
+```docker compose up -d```
 
 Install composer scripts:<br>
-```docker-compose exec php composer install```
+```docker compose exec php composer install```
 
 To install project run command:<br>
-```docker-compose exec php bin/console ask:install```
+```docker compose exec php bin/console ask:install```
 
 **Done! You can open <a href="http://localhost:8507/api" target="_blank">http://localhost:8507/api</a> via browser. 
 By the way, you can change this port by changing ```DOCKER_NGINX_PORT``` variable in [.env](.env) file.** 
@@ -39,13 +39,13 @@ By the way, you can change this port by changing ```DOCKER_NGINX_PORT``` variabl
 
 ## Docker
 For enter to php container run 
-```docker-compose exec php bash```
+```docker compose exec php bash```
 
 For enter to mysql container run 
-```docker-compose exec mysql bash```
+```docker compose exec mysql bash```
 
 For enter to nginx container run 
-```docker-compose exec nginx bash```
+```docker compose exec nginx bash```
 
 You can change containers prefix by changing ```DOCKER_PROJECT_NAME``` variable in [.env](.env) file.  
 
@@ -59,7 +59,7 @@ you should connect via ssh bridge.
 
 You can use [docker/php/cron-file](docker/php/cron-file) for cron jobs. 
 After you must re-build php container by running command:<br> 
-```docker-compose up -d --build```
+```docker compose up -d --build```
 
 ## Swagger 
 You can change project name and description on swagger by editing file
