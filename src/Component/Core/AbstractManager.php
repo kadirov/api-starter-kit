@@ -33,7 +33,7 @@ abstract class AbstractManager
         return $this->entityManager;
     }
 
-    private function updateCreatedOrUpdatedDates(object $entity)
+    private function updateCreatedOrUpdatedDates(object $entity): void
     {
         if ($entity->getId() === null && $entity instanceof CreatedAtSettableInterface) {
             $entity->setCreatedAt(new DateTime());
