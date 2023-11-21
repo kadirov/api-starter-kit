@@ -21,4 +21,4 @@
 ###< lexik/jwt-authentication-bundle ###
 
 # uploaded files
-/public/media
+/public/media/!.gitignore
