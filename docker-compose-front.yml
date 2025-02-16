@@ -1,4 +1,6 @@
 services:
+    # for build the project run
+    # docker compose up generate
     generate:
         container_name: ${DOCKER_PROJECT_NAME}_generate
         image: node:18-alpine3.18
@@ -7,6 +9,8 @@ services:
         working_dir: /var/www/html
         command: /bin/sh -c "npm install && npm run build"
 
+    # for running serve version run
+    # docker compose up dev
     dev:
         container_name: ${DOCKER_PROJECT_NAME}_dev
         image: node:18-alpine3.18
