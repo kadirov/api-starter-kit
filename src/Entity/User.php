@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\OpenApi\Model\Operation;
@@ -46,7 +47,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post(
             controller: UserCreateAction::class,
         ),
-        new Put(
+        new Patch(
             denormalizationContext: ['groups' => ['user:put:write']],
             security: "object == user || is_granted('ROLE_ADMIN')",
         ),
@@ -91,7 +92,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             denormalizationContext: ['groups' => ['user:isUniqueEmail:write']],
             name: 'isUniqueEmail',
         ),
-        new Put(
+        new Patch(
             uriTemplate: 'users/{id}/password',
             controller: UserChangePasswordAction::class,
             openapi: new Operation(
@@ -110,7 +111,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[ApiFilter(OrderFilter::class, properties: ['id', 'createdAt', 'updatedAt', 'email'])]
 #[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'email' => 'partial'])]
-#[UniqueEntity('email', message: 'This email is already used')]
+//#[UniqueEntity('email', message: 'This email is already used')]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements
     UserInterface,
@@ -182,7 +183,7 @@ class User implements
         return $this;
     }
 
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // TODO: Implement eraseCredentials() method.
     }

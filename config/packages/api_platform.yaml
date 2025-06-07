@@ -3,11 +3,12 @@ api_platform:
     description: 'Project description'
     version: '0.0.1'
 
-    mapping:
-        paths: ['%kernel.project_dir%/src/Entity']
+    use_symfony_listeners: true
 
-    patch_formats:
-        json: ['application/merge-patch+json']
+    defaults:
+        stateless: true
+        cache_headers:
+            vary: ['Content-Type', 'Authorization', 'Origin']
 
     swagger:
         versions: [3]

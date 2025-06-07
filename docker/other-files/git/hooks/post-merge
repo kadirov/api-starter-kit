@@ -1,5 +1,0 @@
-#!/bin/bash
-
-echo "Start deploying...";
-docker-compose exec -T php bin/console ask:deploy
-echo "Deploying ended";

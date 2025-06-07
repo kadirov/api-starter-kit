@@ -4,12 +4,12 @@
 
 
 Starter kit for API with 
-[Symfony](https://symfony.com/), 
+[Symfony Skeleton](https://symfony.com/),
 [Doctrine](https://www.doctrine-project.org/), 
 [Maker Bundle](https://symfony.com/doc/current/bundles/SymfonyMakerBundle/index.html), 
 [Migrations Bundle](https://symfony.com/doc/current/bundles/DoctrineMigrationsBundle/index.html), 
 [Api-Platform](https://api-platform.com/) and 
-[JWT-auth](https://jwt.io/). 
+[Lexik JWT-auth](https://jwt.io/).
 
 Kit has also already created User entity with all crud routes
 
@@ -64,17 +64,3 @@ After you must re-build php container by running command:<br>
 ## Swagger 
 You can change project name and description on swagger by editing file
 [config/packages/api_platform.yaml](config/packages/api_platform.yaml)
-
-## Git Hook
-If you don't use any deploying system you can do <br>
-```cp docker/other-files/git/hooks/post-merge .git/hooks``` 
-
-In this way git always executes command ```bin/console ask:deploy```. 
-You can change this command in the file [src/Command/AskDeployCommand.php](src/Command/AskDeployCommand.php).
-This command will install requirements via composer, 
-clear caches, change owner of ./var and ./public/media folders to www-data, will run migrations. 
-
-## JWT keys
-For use Json Web Token system you must create private and public keys. 
-They are have already created when you install project. You can re-create them with:<br>  
-```bin/console ask:generate:jwtKeys```

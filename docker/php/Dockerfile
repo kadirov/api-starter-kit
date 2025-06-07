@@ -1,4 +1,4 @@
-FROM php:8.2.0-fpm
+FROM php:8.3.3-fpm
 
 RUN apt-get update && apt-get install -y \
         cron \
@@ -32,6 +32,8 @@ RUN apt-get update && apt-get install -y \
 	     # pdo_pgsql \
 	     # soap \
 	&& curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+RUN git config --global --add safe.directory /var/www/html
 
 # for supervisor & redis
 # RUN apt-get install -y supervisor && pecl install -o -f redis && rm -rf /tmp/pear && docker-php-ext-enable redis
