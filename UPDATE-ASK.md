@@ -16,5 +16,8 @@ For updating ASK to new version of symfony
 - docker compose exec php bin/console make:migration
 - add description into generated migration file
 - docker compose exec php bin/console ask:install
-- Check the all endpoint via swagger 
-
+- check the all endpoint via swagger
+- do screenshot an save as poster.png if endpoint has changed
+- fix versions in the composer.js
+- delete all files in the old repo then copy all new files to the old folder
+- commit and push the project
