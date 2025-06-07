@@ -19,5 +19,6 @@ For updating ASK to new version of symfony
 - check the all endpoint via swagger
 - do screenshot an save as poster.png if endpoint has changed
 - fix versions in the composer.js
+- add name and license info into compose.json
 - delete all files in the old repo then copy all new files to the old folder
 - commit and push the project
