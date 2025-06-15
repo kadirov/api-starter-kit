@@ -120,14 +120,24 @@ class AbstractController extends \Symfony\Bundle\FrameworkBundle\Controller\Abst
         return $this->currentUser->getJwtUser();
     }
 
-    protected function findEntityOrError(ServiceEntityRepository $repository, int $id): object
+    protected function findEntityOrError(ServiceEntityRepository $repository, ?int $id): object
     {
-        $user = $repository->find($id);
-
-        if ($user === null) {
-            throw new NotFoundHttpException('Object is not found');
+        if ($id === null) {
+            $this->throwNotFoundException();
         }
 
-        return $user;
+        $model = $repository->find($id);
+
+        if ($model === null) {
+            $this->throwNotFoundException();
+        }
+
+        return $model;
+    }
+
+    protected function throwNotFoundException($text = 'Object is not found'): never
+    {
+        throw new NotFoundHttpException($text);
+
     }
 }
