@@ -56,11 +56,13 @@ class ParameterGetter
      */
     public function getBool(string $name): bool
     {
-        if ($name === 'false') {
+        $value = $this->get($name);
+
+        if ($value === 'false') {
             return false;
         }
 
-        return (bool)$this->get($name);
+        return (bool)$value;
     }
 
     /**
