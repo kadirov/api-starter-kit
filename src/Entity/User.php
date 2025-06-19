@@ -11,7 +11,6 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
 use ApiPlatform\OpenApi\Model\Operation;
 use App\Component\User\Dtos\RefreshTokenRequestDto;
 use App\Component\User\Dtos\TokensDto;
@@ -24,12 +23,16 @@ use App\Controller\UserCreateAction;
 use App\Controller\UserIsUniqueEmailAction;
 use App\Entity\Interfaces\CreatedAtSettableInterface;
 use App\Entity\Interfaces\DeletedAtSettableInterface;
+use App\Entity\Interfaces\DeletedBySettableInterface;
 use App\Entity\Interfaces\UpdatedAtSettableInterface;
+use App\Entity\Interfaces\UpdatedBySettableInterface;
+use App\Entity\Traits\CreatedAtAccessorsTrait;
+use App\Entity\Traits\DeletedAtAndByAccessorsTrait;
+use App\Entity\Traits\UpdatedAtAndByAccessorsTrait;
 use App\Repository\UserRepository;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -62,6 +65,7 @@ use Symfony\Component\Validator\Constraints as Assert;
                 summary: 'Shows info about the authenticated user'
             ),
             denormalizationContext: ['groups' => ['user:empty:body']],
+            input: false,
             name: 'aboutMe',
         ),
         new Post(
@@ -117,9 +121,16 @@ class User implements
     UserInterface,
     CreatedAtSettableInterface,
     UpdatedAtSettableInterface,
+    UpdatedBySettableInterface,
     DeletedAtSettableInterface,
+    DeletedBySettableInterface,
     PasswordAuthenticatedUserInterface
 {
+//    use CreatedUpdatedDeletedAtAndByTrait;
+    use CreatedAtAccessorsTrait;
+    use UpdatedAtAndByAccessorsTrait;
+    use DeletedAtAndByAccessorsTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -140,16 +151,23 @@ class User implements
     #[Groups(['user:read'])]
     private array $roles = [];
 
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(['user:read'])]
     private ?DateTimeInterface $createdAt = null;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Groups(['user:read'])]
     private ?DateTimeInterface $updatedAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?DateTimeInterface $deletedAt = null;
+
+    #[ORM\ManyToOne(targetEntity: self::class)]
+    #[Groups(['users:read'])]
+    private ?self $updatedBy = null;
+
+    #[ORM\ManyToOne(targetEntity: self::class)]
+    private ?self $deletedBy = null;
 
     public function getId(): ?int
     {
@@ -234,42 +252,6 @@ class User implements
     public function setEmail(string $email): self
     {
         $this->email = $email;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(DateTimeInterface $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?DateTimeInterface
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(DateTimeInterface $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    public function getDeletedAt(): ?DateTimeInterface
-    {
-        return $this->deletedAt;
-    }
-
-    public function setDeletedAt(?DateTimeInterface $deletedAt): self
-    {
-        $this->deletedAt = $deletedAt;
 
         return $this;
     }

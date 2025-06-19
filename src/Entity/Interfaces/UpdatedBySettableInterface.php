@@ -6,5 +6,5 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 interface UpdatedBySettableInterface
 {
-    public function setUpdatedBy(UserInterface $user);
+    public function setUpdatedBy(UserInterface $user): static;
 }

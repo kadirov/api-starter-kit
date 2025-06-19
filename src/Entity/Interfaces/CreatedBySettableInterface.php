@@ -6,5 +6,5 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 interface CreatedBySettableInterface
 {
-    public function setCreatedBy(UserInterface $user);
+    public function setCreatedBy(UserInterface $user): static;
 }

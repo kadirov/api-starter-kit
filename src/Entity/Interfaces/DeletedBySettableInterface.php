@@ -7,5 +7,5 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 interface DeletedBySettableInterface
 {
-    public function setDeletedBy(UserInterface $user): self;
+    public function setDeletedBy(UserInterface $user): static;
 }
