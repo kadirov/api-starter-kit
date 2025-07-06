@@ -41,3 +41,60 @@ services:
 #        image: redis:7.4.4-alpine
 #        restart: unless-stopped
 #        container_name: ${DOCKER_PROJECT_NAME}_redis
+
+    # #######################################################################
+    # DKIM DNS SETUP INSTRUCTIONS:
+    # Add the following DNS record:
+    # Type:   A
+    # Name:   ${MAILSERVER_HOSTNAME}
+    # Value:  YOUR_SERVER_IP
+    #
+    # Type:   TXT
+    # Name:   ${MAILSERVER_DKIM_SELECTOR}._domainkey
+    # Value:  (contents of ./docker/mailserver/dkim/${MAILSERVER_DKIM_SELECTOR}.txt, without quotes and whitespaces)
+    #             for example:
+    # Value:  v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCZQ+uAtFYnT11d/z65uYizJ1WrZ8CFQEvaRARvJaLA6uHLdf9C
+    #         ImJ9FtDB00vmGaSPdi8tMxxDpeOhYIQjNBZA6wlGgWKsjsOtzMOS6X7YgizAvnIXB+w3W+oRvmJdi8peOhYIQjN3NJ0NsTGmSKmm+/l+GX
+    #         R8M5s3q/0TR/thWwIDAQAB
+    #
+    # Type:   TXT
+    # Name:   @
+    # Value:  "v=spf1 ip4:YOUR_SERVER_IP -all"
+    #     or include also another spf with IP addresses For example if you use mail.ru:
+    # Value:  "v=spf1 ip4:YOUR_SERVER_IP include:_spf.mail.ru -all"
+    #
+    # Type:   TXT
+    # Name:   _dmarc
+    # Value:  "v=DMARC1; p=none; rua=mailto:info@your-domain.com"
+    #     or more strict variation
+    # Value:  "v=DMARC1; p=reject; rua=mailto:info@your-domain.com"
+    #
+    #
+    # UNCOMMENT BELOW
+    # #######################################################################
+
+#    mailserver:
+#        image: mailserver/docker-mailserver:15.0.2
+#        container_name: ${DOCKER_PROJECT_NAME}_mailserver
+#        hostname: ${MAILSERVER_HOSTNAME}
+#        domainname: ${MAILSERVER_DOMAINNAME}
+#        restart: unless-stopped
+#        cap_add:
+#            - NET_ADMIN
+#        environment:
+#            ENABLE_DKIM: 1
+#            OPENDKIM_KEY_LENGTH: 2048
+#            DKIM_SELECTOR: ${MAILSERVER_DKIM_SELECTOR}
+#            ONE_DIR: 1
+#            PERMIT_DOCKER: network
+#            SMTP_ONLY: 0
+#            MAILSERVER_DOMAINNAME: ${MAILSERVER_DOMAINNAME}
+#            MAILSERVER_EMAIL: ${MAILSERVER_EMAIL}
+#            MAILSERVER_EMAIL_PASSWORD: ${MAILSERVER_EMAIL_PASSWORD}
+#        command: bash -c "/docker/init-dkim.sh && /usr/bin/supervisord -c /etc/supervisor/supervisord.conf"
+#        volumes:
+#            - ./docker/mailserver/mail-data:/var/mail
+#            - ./docker/mailserver/mail-state:/var/mail-state
+#            - ./docker/mailserver/config:/tmp/docker-mailserver/
+#            - ./docker/mailserver/init-dkim.sh:/docker/init-dkim.sh
+#            - ./docker/mailserver/dkim:/docker/mailserver/dkim
