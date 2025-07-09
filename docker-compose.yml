@@ -43,26 +43,30 @@ services:
 #        container_name: ${DOCKER_PROJECT_NAME}_redis
 
     # #######################################################################
-    # DKIM DNS SETUP INSTRUCTIONS:
+    # EMAIL SETUP INSTRUCTIONS:
+    # ----------------------------------------------------------------------|
+    # PTR of you IP have to be ${MAILSERVER_HOSTNAME}
+    # ----------------------------------------------------------------------|
     # Add the following DNS record:
     # Type:   A
     # Name:   ${MAILSERVER_HOSTNAME}
     # Value:  YOUR_SERVER_IP
-    #
+    # ----------------------------------------------------------------------|
     # Type:   TXT
     # Name:   ${MAILSERVER_DKIM_SELECTOR}._domainkey
-    # Value:  (contents of ./docker/mailserver/dkim/${MAILSERVER_DKIM_SELECTOR}.txt, without quotes and whitespaces)
+    # Value:  (contents of ./docker/mailserver/dkim/${MAILSERVER_DKIM_SELECTOR}.txt, without quotes before p=)
     #             for example:
-    # Value:  v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCZQ+uAtFYnT11d/z65uYizJ1WrZ8CFQEvaRARvJaLA6uHLdf9C
-    #         ImJ9FtDB00vmGaSPdi8tMxxDpeOhYIQjNBZA6wlGgWKsjsOtzMOS6X7YgizAvnIXB+w3W+oRvmJdi8peOhYIQjN3NJ0NsTGmSKmm+/l+GX
-    #         R8M5s3q/0TR/thWwIDAQAB
-    #
+    # Value:  v=DKIM1; h=sha256; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAo++V9EZhFQAjoqIduXPYyuPRl2T7QQVU9y
+    #         2RGGuUZ9OaMTT/XNiMRsE4iRLq6ZrtBCCMyOqyYmVmjpfKoq/PlQ3zkCDh3C/3GvR7TDH9Yc4BeLdYLxslF9UY5tUZDaQ9SsA0O+akQtAS
+    #         ZUll2sD3OBmuc74mom1VmuV/BLop0t5fGOXR5PVG7YYy+enyMYbi4azNA++0pF0e50" "ViaP4E8lEUw6pl9TjokdUepRVJa5gDPG4QImy
+    #         ByVqlx8yWkyPaVG+0X9U0xtCfSQnPzO8s1MRVANfQKIMe0yaGj/6GtntAqardi82NrgM9OieG3kn2syT03XPUEx7+Msl31r+APQIDAQAB
+    # ----------------------------------------------------------------------|
     # Type:   TXT
     # Name:   @
     # Value:  "v=spf1 ip4:YOUR_SERVER_IP -all"
     #     or include also another spf with IP addresses For example if you use mail.ru:
     # Value:  "v=spf1 ip4:YOUR_SERVER_IP include:_spf.mail.ru -all"
-    #
+    # ----------------------------------------------------------------------|
     # Type:   TXT
     # Name:   _dmarc
     # Value:  "v=DMARC1; p=none; rua=mailto:info@your-domain.com"
@@ -95,6 +99,6 @@ services:
 #        volumes:
 #            - ./docker/mailserver/mail-data:/var/mail
 #            - ./docker/mailserver/mail-state:/var/mail-state
-#            - ./docker/mailserver/config:/tmp/docker-mailserver/
 #            - ./docker/mailserver/init-dkim.sh:/docker/init-dkim.sh
 #            - ./docker/mailserver/dkim:/docker/mailserver/dkim
+#            - ./docker/mailserver/opendkim/:/etc/opendkim/
