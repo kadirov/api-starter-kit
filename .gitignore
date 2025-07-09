@@ -19,3 +19,9 @@
 ###> lexik/jwt-authentication-bundle ###
 /config/jwt/*.pem
 ###< lexik/jwt-authentication-bundle ###
+
+# mailserver
+/docker/mailserver/**
+!/docker/mailserver/dkim/
+!/docker/mailserver/dkim/.gitkeep
+!/docker/mailserver/init-dkim.sh
