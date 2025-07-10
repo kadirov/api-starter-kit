@@ -6,6 +6,7 @@ services:
         image: node:20-alpine3.21
         volumes:
             - ./:/var/www/html
+            - /var/www/html/node_modules # ignoring node_modules folder
         working_dir: /var/www/html
         command: /bin/sh -c "npm install && npm run build"
 
@@ -16,6 +17,7 @@ services:
         image: node:20-alpine3.21
         volumes:
             - ./:/var/www/html
+            - /var/www/html/node_modules # ignoring node_modules folder
         working_dir: /var/www/html
         ports:
             - "5173:5173"
