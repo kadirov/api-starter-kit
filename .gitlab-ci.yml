@@ -51,5 +51,6 @@
 #            git pull origin main &&
 #            docker compose down &&
 #            docker compose up -d --build &&
+#            docker compose --profile backup up -d --build &&
 #            docker compose exec php composer install &&
 #            docker compose exec php bin/console ask:deploy"

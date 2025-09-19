@@ -1,15 +1,15 @@
 services:
     php:
         container_name: ${DOCKER_PROJECT_NAME}_php
+        build: ./docker/php
         restart: unless-stopped
         volumes:
             - ./:/var/www/html
             - ./docker/php/php.ini:/usr/local/etc/php/php.ini
             # if you use supervisor
             #- ./docker/php/supervisor/messenger-worker.conf:/etc/supervisor/conf.d/messenger-worker.conf
-        build: ./docker/php
         depends_on:
-            - mysql
+            - db
 
     nginx:
         container_name: ${DOCKER_PROJECT_NAME}_nginx
@@ -20,53 +20,98 @@ services:
             - ./:/var/www/html
             - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
         depends_on:
-            - mysql
+            - db
         ports:
             - 127.0.0.1:${DOCKER_NGINX_PORT}:80
 
-    mysql:
+    db:
         image: mariadb:11.7.2
-        container_name: ${DOCKER_PROJECT_NAME}_mysql
+        container_name: ${DOCKER_PROJECT_NAME}_db
         restart: unless-stopped
         environment:
-            - MYSQL_ROOT_PASSWORD=${DATABASE_PASSWORD}
-            - MYSQL_DATABASE=${DOCKER_PROJECT_NAME}
+            MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+            MYSQL_DATABASE: ${DOCKER_PROJECT_NAME}
         volumes:
             # - ./sql:/sql
             - ./docker/mysql/db:/var/lib/mysql
         ports:
-            - 127.0.0.1:${DOCKER_DATABASE_PORT}:3306
+            - 127.0.0.1:${DOCKER_DATABASE_PORT}:3306  # use 5432 for pgsql
 
-#    redis:
-#        image: redis:7.4.4-alpine
-#        restart: unless-stopped
-#        container_name: ${DOCKER_PROJECT_NAME}_redis
+
+    #    redis:
+    #        image: redis:7.4.4-alpine
+    #        restart: unless-stopped
+    #        container_name: ${DOCKER_PROJECT_NAME}_redis
+
+    # Backup block. Turns on with docker compose --profile backup up -d
+    telegram-bot-api:
+        profiles:
+            - backup
+        env_file:
+            - .env.backup.local # copy from .env.backup.local.example as a template
+        image: ghcr.io/bots-house/docker-telegram-bot-api:latest
+        container_name: ${DOCKER_PROJECT_NAME}_tgbot
+        restart: unless-stopped
+        environment:
+            TELEGRAM_LOCAL: "true"
+        volumes:
+            - ./docker/tgbot/data:/var/lib/telegram-bot-api
+
+    backup:
+        profiles:
+            - backup
+        env_file:
+            - .env.backup.local # copy from .env.backup.local.example as a template
+        build: ./docker/backup
+        container_name: ${DOCKER_PROJECT_NAME}_backup
+        restart: unless-stopped
+        depends_on:
+            - db
+            - telegram-bot-api
+        environment:
+            PROJECT_NAME: ${DOCKER_PROJECT_NAME}
+            API_HOST: "telegram-bot-api:8081"
+            DB_ENGINE: mysql # or pgsql
+            DB_HOST: db
+            DB_PORT: 3306 # for pgsql use 5432
+            DB_NAME: ${DOCKER_PROJECT_NAME}
+            DB_USER: root
+            DB_PASS: ${DATABASE_PASSWORD}
+            PROJECT_PATH: /var/www/html
+            EXCLUDES: "vendor node_modules var/log storage/logs .git docker/nginx/logs"
+        volumes:
+            - ./:/var/www/html:ro
+        command:
+            - sh
+            - -lc
+            - |
+                printf "%s\n" "0 0 * * * /usr/local/bin/backup.sh >> /var/log/cron.log 2>&1" > /etc/crontabs/root
+                crond -f -l 8
+
 
     # #######################################################################
-    # EMAIL SETUP INSTRUCTIONS:
-    # ----------------------------------------------------------------------|
-    # Maybe you can use mailjet.com or mailgun.com?
-    # ----------------------------------------------------------------------|
-    # PTR of you IP have to be ${MAILSERVER_HOSTNAME}
+    # DKIM DNS SETUP INSTRUCTIONS:
     # ----------------------------------------------------------------------|
     # Add the following DNS record:
     # Type:   A
     # Name:   ${MAILSERVER_HOSTNAME}
-    # Value:  YOUR_SERVER_IP
+    # Value:  SERVER IP4
     # ----------------------------------------------------------------------|
     # Type:   TXT
     # Name:   ${MAILSERVER_DKIM_SELECTOR}._domainkey
-    # Value:  (contents of ./docker/mailserver/dkim/${MAILSERVER_DKIM_SELECTOR}.txt, without quotes before p=)
+    # Value:  (contents of ./docker/mailserver/dkim/${MAILSERVER_DKIM_SELECTOR}.txt.
+    #         Without spaces and quotes and split each line max 255 characters. Tools: https://dkimcore.org/tools/ or
+    #         https://www.mailhardener.com/tools/dns-record-splitter)
     #             for example:
     # Value:  v=DKIM1; h=sha256; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAo++V9EZhFQAjoqIduXPYyuPRl2T7QQVU9y
     #         2RGGuUZ9OaMTT/XNiMRsE4iRLq6ZrtBCCMyOqyYmVmjpfKoq/PlQ3zkCDh3C/3GvR7TDH9Yc4BeLdYLxslF9UY5tUZDaQ9SsA0O+akQtAS
-    #         ZUll2sD3OBmuc74mom1VmuV/BLop0t5fGOXR5PVG7YYy+enyMYbi4azNA++0pF0e50" "ViaP4E8lEUw6pl9TjokdUepRVJa5gDPG4QImy
+    #         ZUll2sD3OBmuc74mom1VmuV/BLop0t5fGOXR5PVG7YYy+enyMYbi4azNA++0pF0e50ViaP4E8lEUw6pl9TjokdUepRVJa5gDPG4QImy
     #         ByVqlx8yWkyPaVG+0X9U0xtCfSQnPzO8s1MRVANfQKIMe0yaGj/6GtntAqardi82NrgM9OieG3kn2syT03XPUEx7+Msl31r+APQIDAQAB
     # ----------------------------------------------------------------------|
     # Type:   TXT
     # Name:   @
     # Value:  "v=spf1 ip4:YOUR_SERVER_IP -all"
-    #     or include also another spf with IP addresses For example if you use mail.ru:
+    #     or add also another spf, for example if you use mail.ru:
     # Value:  "v=spf1 ip4:YOUR_SERVER_IP include:_spf.mail.ru -all"
     # ----------------------------------------------------------------------|
     # Type:   TXT
@@ -78,29 +123,32 @@ services:
     #
     # UNCOMMENT BELOW
     # #######################################################################
-
-#    mailserver:
-#        image: mailserver/docker-mailserver:15.0.2
-#        container_name: ${DOCKER_PROJECT_NAME}_mailserver
-#        hostname: ${MAILSERVER_HOSTNAME}
-#        domainname: ${MAILSERVER_DOMAINNAME}
-#        restart: unless-stopped
-#        cap_add:
-#            - NET_ADMIN
-#        environment:
-#            ENABLE_DKIM: 1
-#            OPENDKIM_KEY_LENGTH: 2048
-#            DKIM_SELECTOR: ${MAILSERVER_DKIM_SELECTOR}
-#            ONE_DIR: 1
-#            PERMIT_DOCKER: network
-#            SMTP_ONLY: 0
-#            MAILSERVER_DOMAINNAME: ${MAILSERVER_DOMAINNAME}
-#            MAILSERVER_EMAIL: ${MAILSERVER_EMAIL}
-#            MAILSERVER_EMAIL_PASSWORD: ${MAILSERVER_EMAIL_PASSWORD}
-#        command: bash -c "/docker/init-dkim.sh && /usr/bin/supervisord -c /etc/supervisor/supervisord.conf"
-#        volumes:
-#            - ./docker/mailserver/mail-data:/var/mail
-#            - ./docker/mailserver/mail-state:/var/mail-state
-#            - ./docker/mailserver/init-dkim.sh:/docker/init-dkim.sh
-#            - ./docker/mailserver/dkim:/docker/mailserver/dkim
-#            - ./docker/mailserver/opendkim/:/etc/opendkim/
+    mailserver:
+        profiles:
+            - mailserver
+        image: mailserver/docker-mailserver:15.0.2
+        container_name: ${DOCKER_PROJECT_NAME}_mailserver
+        hostname: ${MAILSERVER_DOMAINNAME}
+        domainname: ${MAILSERVER_DOMAINNAME}
+        restart: unless-stopped
+        cap_add:
+            - NET_ADMIN
+        environment:
+            ENABLE_DKIM: 1
+            OPENDKIM_KEY_LENGTH: 2048
+            DKIM_SELECTOR: ${MAILSERVER_DKIM_SELECTOR}
+            ONE_DIR: 1
+            PERMIT_DOCKER: network
+            SMTP_ONLY: 0
+            MAILSERVER_DOMAINNAME: ${MAILSERVER_DOMAINNAME}
+            MAILSERVER_EMAIL: ${MAILSERVER_EMAIL}
+            MAILSERVER_EMAIL_PASSWORD: ${MAILSERVER_EMAIL_PASSWORD}
+        command: bash -c "/docker/init-dkim.sh && /usr/bin/supervisord -c /etc/supervisor/supervisord.conf"
+        ports:
+            - "${DOCKER_MAILSERVER_SMTP_PORT}:587"
+        volumes:
+            - ./docker/mailserver/mail-data:/var/mail
+            - ./docker/mailserver/mail-state:/var/mail-state
+            - ./docker/mailserver/init-dkim.sh:/docker/init-dkim.sh
+            - ./docker/mailserver/dkim:/docker/mailserver/dkim
+            - ./docker/mailserver/opendkim/:/etc/opendkim/

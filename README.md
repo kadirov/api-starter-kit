@@ -36,7 +36,6 @@ To install project run command:<br>
 **Done! You can open <a href="http://localhost:8507/api" target="_blank">http://localhost:8507/api</a> via browser. 
 By the way, you can change this port by changing ```DOCKER_NGINX_PORT``` variable in [.env](.env) file.** 
 
-
 ## Docker
 For enter to php container run 
 ```docker compose exec php bash```
@@ -54,6 +53,9 @@ Also, you can change public ports of nginx and mysql by changing ```DOCKER_NGINX
 Database allows connections only from localhost. 
 Because of this when you use the project on production and want to connect to database from your computer
 you should connect via ssh bridge.
+
+## Backup
+For auto backup you can use ```docker compose --profile backup up -d``` 
 
 ## Cron
 
