@@ -31,9 +31,9 @@
 #        - echo "Deploying the DEV project..."
 #        - ssh -tt -o StrictHostKeyChecking=no -p ${DEPLOY_PORT_DEV:-22} ${DEPLOY_HOST_DEV} \
 #            "cd ${DEPLOY_PATH_DEV:-/root/sites/${PROJECT_NAME}-api-dev/} &&
+#            docker compose down &&
 #            git reset --hard &&
 #            git pull origin dev &&
-#            docker compose down &&
 #            docker compose --env-file=.env.local up -d --build &&
 #            docker compose exec php composer install &&
 #            docker compose exec php bin/console ask:deploy"
@@ -47,9 +47,10 @@
 #        - echo "Deploying the PROD project..."
 #        - ssh -tt -o StrictHostKeyChecking=no -p ${DEPLOY_PORT_PROD:-${DEPLOY_PORT_DEV:-22}} ${DEPLOY_HOST_PROD:-$DEPLOY_HOST_DEV} \
 #            "cd ${DEPLOY_PATH_PROD:-/root/sites/${PROJECT_NAME}-api/} &&
+#            docker compose --profile backup down
+#            docker compose down &&
 #            git reset --hard &&
 #            git pull origin main &&
-#            docker compose down &&
 #            docker compose up -d --build &&
 #            docker compose --profile backup up -d --build &&
 #            docker compose exec php composer install &&
