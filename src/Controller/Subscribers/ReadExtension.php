@@ -8,18 +8,23 @@ use ApiPlatform\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
 use ApiPlatform\Doctrine\Orm\Extension\QueryItemExtensionInterface;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use ApiPlatform\Metadata\Operation;
-use App\Controller\Base\AbstractController;
 use App\Entity\Interfaces\DeletedAtSettableInterface;
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Bundle\SecurityBundle\Security;
 
 /**
  * Class uses for change all queries to database.
  *
  * @package App\Controller\ApiPlatform\Extensions
  */
-class ReadExtension extends AbstractController implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
+class ReadExtension implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
 {
     private array $resourceClassInterfaces = [];
+
+    public function __construct(
+        private Security $security
+    ) {
+    }
 
     /**
      * Collection operations without id, like GET /users
@@ -64,6 +69,12 @@ class ReadExtension extends AbstractController implements QueryCollectionExtensi
             $this->hideDeleted($queryBuilder, $rootTable);
         }
 
+        $user = $this->security->getUser();
+
+        if ($user === null) {
+            return;
+        }
+
         switch ($resourceClass) {
 //            case Application::class:
 //                $this->joinEntityAndAddUser($queryBuilder, $rootTable, 'company');
@@ -87,8 +98,10 @@ class ReadExtension extends AbstractController implements QueryCollectionExtensi
 
     private function addUser(QueryBuilder $queryBuilder, string $tableName): void
     {
+        $user = $this->security->getUser();
+
         $queryBuilder->andWhere("{$tableName}.createdBy = :user");
-        $queryBuilder->setParameter('user', $this->getUser());
+        $queryBuilder->setParameter('user', $user);
 
         // or if you use microservices
         // $queryBuilder->andWhere("{$tableName}.userId = :userId");
