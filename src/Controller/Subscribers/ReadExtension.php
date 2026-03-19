@@ -28,7 +28,7 @@ class ReadExtension extends AbstractController implements QueryCollectionExtensi
         QueryBuilder $queryBuilder,
         QueryNameGeneratorInterface $queryNameGenerator,
         string $resourceClass,
-        Operation $operation = null,
+        ?Operation $operation = null,
         array $context = []
     ): void {
         $this->andWhere($queryBuilder, $resourceClass);
@@ -42,7 +42,7 @@ class ReadExtension extends AbstractController implements QueryCollectionExtensi
         QueryNameGeneratorInterface $queryNameGenerator,
         string $resourceClass,
         array $identifiers,
-        Operation $operation = null,
+        ?Operation $operation = null,
         array $context = []
     ): void {
         $this->andWhere($queryBuilder, $resourceClass);

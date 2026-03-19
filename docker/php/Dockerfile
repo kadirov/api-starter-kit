@@ -1,4 +1,4 @@
-FROM php:8.3.3-fpm
+FROM php:8.5-fpm
 
 RUN apt-get update && apt-get install -y \
         cron \
@@ -6,16 +6,16 @@ RUN apt-get update && apt-get install -y \
         libzip-dev \
         zip \
         unzip \
-        # - for pdo_pgsql
+        # - for pdo_pgsql \
         # libpq-dev \
-        # - for soap
+        # - for soap \
         # libxml2-dev \
-        # for GD
+        # for GD \
         libwebp-dev \
         libjpeg62-turbo-dev \
         libpng-dev \
         libfreetype6-dev \
-        # for intld
+        # for intld \
         libicu-dev \
     && docker-php-ext-configure gd \
             --with-webp \

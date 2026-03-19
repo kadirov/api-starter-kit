@@ -27,7 +27,7 @@ class AskInstallCommand extends Command implements GetOutputInterface
 
     public function __construct(
         private EntityManagerInterface $entityManager,
-        string $name = null
+        ?string $name = null
     ) {
         parent::__construct($name);
     }
@@ -63,10 +63,9 @@ class AskInstallCommand extends Command implements GetOutputInterface
 
         while (true) {
             try {
-                $this->entityManager->getConnection()->connect();
-                if ($this->entityManager->getConnection()->isConnected()) {
-                    return;
-                }
+                $this->entityManager->getConnection()->executeQuery('SELECT 1');
+
+                return;
             } catch (Throwable) {
                 sleep(5);
             }

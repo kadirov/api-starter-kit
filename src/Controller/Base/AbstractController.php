@@ -14,13 +14,14 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class AbstractController extends \Symfony\Bundle\FrameworkBundle\Controller\AbstractController
 {
     private SerializerInterface $serializer;
-    private ValidatorInterface  $validator;
-    private CurrentUser         $currentUser;
+    private ValidatorInterface $validator;
+    private CurrentUser $currentUser;
 
     public function __construct(
         SerializerInterface $serializer,
@@ -97,6 +98,7 @@ class AbstractController extends \Symfony\Bundle\FrameworkBundle\Controller\Abst
      * @param string $dtoClass
      * @param string $format
      * @return object
+     * @throws ExceptionInterface
      */
     protected function getDtoFromRequest(
         Request $request,
@@ -138,6 +140,5 @@ class AbstractController extends \Symfony\Bundle\FrameworkBundle\Controller\Abst
     protected function throwNotFoundException($text = 'Object is not found'): never
     {
         throw new NotFoundHttpException($text);
-
     }
 }

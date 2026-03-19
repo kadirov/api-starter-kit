@@ -35,7 +35,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
@@ -147,7 +147,7 @@ class User implements
     #[Assert\Length(min: 6, minMessage: 'Password must be at least {{ limit }} characters long')]
     private ?string $password = null;
 
-    #[ORM\Column(type: 'array')]
+    #[ORM\Column(type: 'json')]
     #[Groups(['user:read'])]
     private array $roles = [];
 
