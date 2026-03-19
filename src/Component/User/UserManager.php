@@ -19,9 +19,10 @@ class UserManager extends AbstractManager
 {
     public function __construct(
         EntityManagerInterface $entityManager,
-        private UserPasswordHasherInterface $passwordEncoder
+        CurrentUser $currentUser,
+        private UserPasswordHasherInterface $passwordEncoder,
     ) {
-        parent::__construct($entityManager);
+        parent::__construct($entityManager, $currentUser);
     }
 
     public function hashPassword(User $user, string $plainPassword): void
