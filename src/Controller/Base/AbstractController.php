@@ -14,22 +14,27 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Serializer\Exception\ExceptionInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class AbstractController extends \Symfony\Bundle\FrameworkBundle\Controller\AbstractController
 {
     private SerializerInterface $serializer;
-    private ValidatorInterface  $validator;
-    private CurrentUser         $currentUser;
+    private ValidatorInterface $validator;
+    private CurrentUser $currentUser;
+    private DenormalizerInterface $denormalizer;
 
     public function __construct(
         SerializerInterface $serializer,
         ValidatorInterface $validator,
-        CurrentUser $currentUser
+        CurrentUser $currentUser,
+        DenormalizerInterface $denormalizer
     ) {
         $this->serializer = $serializer;
         $this->validator = $validator;
         $this->currentUser = $currentUser;
+        $this->denormalizer = $denormalizer;
     }
 
     /**
@@ -95,19 +100,14 @@ class AbstractController extends \Symfony\Bundle\FrameworkBundle\Controller\Abst
     /**
      * @param Request $request
      * @param string $dtoClass
-     * @param string $format
      * @return object
+     * @throws ExceptionInterface
      */
     protected function getDtoFromRequest(
         Request $request,
         string $dtoClass,
-        string $format = ResponseFormat::JSONLD
     ): object {
-        return $this->getSerializer()->deserialize(
-            $request->getContent(),
-            $dtoClass,
-            $format
-        );
+        return $this->denormalizer->denormalize(json_decode($request->getContent(), true), $dtoClass);
     }
 
     protected function getUser(): User
@@ -138,6 +138,5 @@ class AbstractController extends \Symfony\Bundle\FrameworkBundle\Controller\Abst
     protected function throwNotFoundException($text = 'Object is not found'): never
     {
         throw new NotFoundHttpException($text);
-
     }
 }

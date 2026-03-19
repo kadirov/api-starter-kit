@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Component\User\Dtos;
 
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 /**
  * Class RefreshTokenDto

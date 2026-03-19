@@ -18,7 +18,7 @@ class AskRolesShowUserRolesCommand extends Command
 {
     public function __construct(
         private UserRepository $userRepository,
-        string $name = null
+        ?string $name = null
     ) {
         parent::__construct($name);
     }
