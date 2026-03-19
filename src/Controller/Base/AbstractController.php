@@ -103,7 +103,7 @@ class AbstractController extends \Symfony\Bundle\FrameworkBundle\Controller\Abst
     protected function getDtoFromRequest(
         Request $request,
         string $dtoClass,
-        string $format = ResponseFormat::JSON
+        string $format = ResponseFormat::JSONLD
     ): object {
         return $this->getSerializer()->deserialize(
             $request->getContent(),

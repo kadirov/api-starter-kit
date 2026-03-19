@@ -6,7 +6,6 @@ namespace App\Controller;
 
 use App\Component\User\Dtos\RefreshTokenDto;
 use App\Component\User\Dtos\RefreshTokenRequestDto;
-use App\Component\User\Dtos\TokensDto;
 use App\Component\User\Exceptions\AuthException;
 use App\Component\User\TokensCreator;
 use App\Controller\Base\AbstractController;
@@ -23,7 +22,7 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 /**
  * Class UserAuthAction
  *
- * @method RefreshTokenRequestDto getDtoFromRequest(Request $request, string $dtoClass)
+ * @method RefreshTokenRequestDto getDtoFromRequest(Request $request, string $dtoClass, string $format)
  * @package App\Controller
  */
 class UserAuthByRefreshTokenAction extends AbstractController
@@ -40,7 +39,12 @@ class UserAuthByRefreshTokenAction extends AbstractController
         TokensCreator $tokensCreator,
         DenormalizerInterface $denormalizer
     ): Response {
-        $requestDto = $this->getDtoFromRequest($request, RefreshTokenRequestDto::class);
+        $requestDto = $this->getDtoFromRequest(
+            $request,
+            RefreshTokenRequestDto::class,
+            ResponseFormat::JSON
+        );
+
         $refreshTokenDto = $this->arrayToDto($denormalizer, $tokenEncoder->decode($requestDto->getRefreshToken()));
 
         $user = $userRepository->find($refreshTokenDto->getId());
