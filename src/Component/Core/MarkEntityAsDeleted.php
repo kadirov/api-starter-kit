@@ -14,7 +14,7 @@ class MarkEntityAsDeleted extends AbstractManager
 {
     public function __construct(EntityManagerInterface $entityManager, private CurrentUser $currentUser)
     {
-        parent::__construct($entityManager);
+        parent::__construct($entityManager, $currentUser);
     }
 
     public function mark(DeletedAtSettableInterface|DeletedBySettableInterface $entity, bool $needToFlush = false): void
