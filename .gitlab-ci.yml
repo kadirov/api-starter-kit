@@ -35,6 +35,7 @@
 #            git reset --hard &&
 #            git pull origin dev &&
 #            docker compose --env-file=.env.local up -d --build &&
+#            sleep 15 &&
 #            docker compose exec php composer install &&
 #            docker compose exec php bin/console ask:deploy"
 #
@@ -53,5 +54,6 @@
 #            git pull origin main &&
 #            docker compose up -d --build &&
 #            docker compose --profile backup up -d --build &&
+#            sleep 15 &&
 #            docker compose exec php composer install &&
 #            docker compose exec php bin/console ask:deploy"
