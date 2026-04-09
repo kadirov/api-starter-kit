@@ -33,7 +33,7 @@
 #            "cd ${DEPLOY_PATH_DEV:-/root/sites/static/${PROJECT_NAME}-front-dev/} &&
 #            git reset --hard &&
 #            git pull &&
-#            docker compose --env-file=.env.local up -d"
+#            docker compose --env-file=.env.local up"
 #
 #deploy-prod-job:
 #    stage: deploy
@@ -46,4 +46,4 @@
 #            "cd ${DEPLOY_PATH_PROD:-/root/sites/static/${PROJECT_NAME}-front/} &&
 #            git reset --hard &&
 #            git pull &&
-#            docker compose up -d"
+#            docker compose up"
