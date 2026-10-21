@@ -255,4 +255,9 @@ class User implements
 
         return $this;
     }
+
+    public function isDeleted(): bool
+    {
+        return $this->deletedAt !== null;
+    }
 }
