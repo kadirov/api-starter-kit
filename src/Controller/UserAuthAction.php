@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Component\User\Exceptions\AuthException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use App\Component\User\TokensCreator;
 use App\Controller\Base\AbstractController;
 use App\Entity\User;
@@ -35,6 +36,10 @@ class UserAuthAction extends AbstractController
             $this->throwInvalidCredentials();
         }
 
+        if ($user->isDeleted()) {
+            throw new AccessDeniedHttpException('Access denied');
+        }
+        
         if (!$passwordEncoder->isPasswordValid($user, $data->getPassword())) {
             $this->throwInvalidCredentials();
         }
