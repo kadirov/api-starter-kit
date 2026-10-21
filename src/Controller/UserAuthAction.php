@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Component\User\Exceptions\AuthException;
+use App\Component\User\Exceptions\AccessDeniedException;
 use App\Component\User\TokensCreator;
 use App\Controller\Base\AbstractController;
 use App\Entity\User;
@@ -35,6 +36,10 @@ class UserAuthAction extends AbstractController
             $this->throwInvalidCredentials();
         }
 
+        if ($user->isDeleted() {
+            $this->throwAccessDenied();
+        }
+            
         if (!$passwordEncoder->isPasswordValid($user, $data->getPassword())) {
             $this->throwInvalidCredentials();
         }
@@ -48,5 +53,13 @@ class UserAuthAction extends AbstractController
     private function throwInvalidCredentials(): void
     {
         throw new AuthException('Invalid credentials');
+    }
+
+    /**
+    * @throws AccessDeniedException
+    */
+    private function throwAccessDenied(): void
+    {
+        throw new AccessDeniedException('Access denied');
     }
 }
